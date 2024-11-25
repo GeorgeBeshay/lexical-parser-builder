@@ -33,4 +33,4 @@
 
 # IDE Files
 /.idea/
-/cmake-build-debug/
+/src/cmake-build-debug/
