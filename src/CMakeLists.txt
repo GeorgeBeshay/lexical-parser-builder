@@ -3,4 +3,4 @@ project(LexicalParser)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(LexicalParser main.cpp)
+add_executable(LexicalParser main.cpp RegexScanner.cpp)

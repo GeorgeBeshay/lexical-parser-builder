@@ -1,20 +1,13 @@
 #include <iostream>
 #include <bits/stdc++.h>
 
+#include "RegexScanner.h"
+
 using namespace std;
 
-template <typename S>
-ostream& operator<<(ostream& os,
-                    const vector<S>& vector)
-{
-    for (auto element : vector) {
-        os << element << ",";
-    }
-    os << endl;
-    return os;
-}
-
 int main() {
-    cout << "Hey" << endl;
+    string filePath = "../../inputs/LexicalRulesInput.txt";
+    RegexScanner regexScanner(filePath);
+    regexScanner.printOutput();
     return 0;
 }
