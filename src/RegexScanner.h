@@ -15,7 +15,7 @@ private:
     vector<string> reservedPunctuations;
 
     void readFile(string& filePath);
-    void readLine(string& line);
+    void interpretRule(string& line);
 
 public:
     RegexScanner(string& filePath) {

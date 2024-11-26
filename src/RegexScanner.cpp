@@ -1,9 +1,9 @@
 #include "RegexScanner.h"
 
-#define DEFINITION_REGEX    regex(R"(^\s*(\w+)\s*=\s*(.+)$)")
-#define EXPRESSION_REGEX    regex(R"(^\s*(\w+)\s*:\s*(.+)$)")
-#define KEYWORDS_REGEX       regex(R"(\{\s*([^}]+)\s*\})")
-#define PUNCTUATIONS_REGEX   regex(R"(\[\s*([^\]]+)\s*\])")
+#define DEFINITION_REGEX     regex(R"(^\s*(\w+)\s*=\s*(.+)$)")
+#define EXPRESSION_REGEX     regex(R"(^\s*(\w+)\s*:\s*(.+)$)")
+#define KEYWORDS_REGEX       regex(R"(\{(.*)\})")
+#define PUNCTUATIONS_REGEX   regex(R"(\[(.*)\])")
 
 void RegexScanner::readFile(string &filePath) {
     ifstream file(filePath);
@@ -14,11 +14,11 @@ void RegexScanner::readFile(string &filePath) {
 
     string line;
     while (getline(file, line)) {
-        readLine(line);
+        interpretRule(line);
     }
 }
 
-void RegexScanner::readLine(std::string &line) {
+void RegexScanner::interpretRule(std::string &line) {
     smatch match;
 
     if (regex_match(line, match, DEFINITION_REGEX)) {
