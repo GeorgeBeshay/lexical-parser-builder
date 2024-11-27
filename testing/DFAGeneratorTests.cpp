@@ -222,7 +222,7 @@ TEST(DFAGeneratorTests, moveNFACorrectly) {
     ASSERT_EQ(destinationStates, expectedDestinationStates);
 }
 
-TEST(DFAGEneratorTests, unorderedSetToOrderedSetCorrectly) {
+TEST(DFAGeneratorTests, unorderedSetToOrderedSetCorrectly) {
     // Arrange
     unordered_set<State> s2 = {98, 12, 57, 23};
 
@@ -236,7 +236,7 @@ TEST(DFAGEneratorTests, unorderedSetToOrderedSetCorrectly) {
     ASSERT_EQ(s1, convertedSet);
 }
 
-TEST(DFAGEneratorTests, computeEpsilonClosureCorrectly) {
+TEST(DFAGeneratorTests, computeEpsilonClosureCorrectly) {
     // Arrange
     unordered_map<State, unordered_set<State>> NFAEpsilonTransMap = {
         {0, {1, 7}},
