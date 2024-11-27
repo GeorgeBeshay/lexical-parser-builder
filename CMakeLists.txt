@@ -7,4 +7,5 @@ add_executable(
         lexical-parser-builder
         src/main.cpp
         src/RegexScanner.cpp
+        src/DFAGenerator.cpp
 )
