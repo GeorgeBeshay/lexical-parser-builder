@@ -1,4 +1,11 @@
 #include "RegexScanner.h"
+#include <fstream>       // For ifstream
+#include <sstream>       // For istringstream
+#include <regex>         // For regex and smatch
+#include <iostream>
+#include <vector>
+#include <string>
+#include <utility>       // For std::pair
 
 #define DEFINITION_REGEX     regex(R"(^\s*(\w+)\s*=\s*(.+)$)")
 #define EXPRESSION_REGEX     regex(R"(^\s*(\w+)\s*:\s*(.+)$)")
@@ -50,7 +57,6 @@ void RegexScanner::interpretRule(std::string &line) {
     else {
         cerr << "This line does not match with anything: " << line << endl;
     }
-
 }
 
 void RegexScanner::printOutput() {

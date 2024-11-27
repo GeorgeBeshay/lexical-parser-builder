@@ -1,8 +1,10 @@
 #ifndef LEXICALPARSER_REGEXSCANNER_H
 #define LEXICALPARSER_REGEXSCANNER_H
 
-#include <bits/stdc++.h>
 #include <iostream>
+#include <vector>
+#include <string>
+#include <utility>  // For std::pair
 
 using namespace std;
 
