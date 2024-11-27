@@ -17,7 +17,8 @@ public:
             const unordered_map<State, unordered_map<Symbol, unordered_set<State>>>& NFATransMap,
             const unordered_map<State, unordered_set<State>>& NFAEpsilonTransMap,
             const unordered_set<State>& NFAAcceptingStates,
-            const unordered_set<State>& NFAInitialStates
+            const unordered_set<State>& NFAInitialStates,
+            const unordered_set<Symbol>& symbols
             );
 
     // getters
@@ -26,18 +27,26 @@ public:
     unordered_map<State, unordered_map<Symbol, State>> getTransMap() const;
     unordered_set<State> getAcceptingStates() const;
     State getInitialState() const;
+    int getNumberOfStates() const;
 
 private:
     unordered_map<State, unordered_map<Symbol, State>> transMap;
     unordered_set<State> acceptingStates;
     State initialState;
+    int numberOfStates;
 
     // core algorithm
     void subsetConstruction(
             const unordered_map<State, unordered_map<Symbol, unordered_set<State>>>& NFATransMap,
             const unordered_map<State, unordered_set<State>>& NFAEpsilonTransMap,
             const unordered_set<State>& NFAAcceptingStates,
-            const unordered_set<State>& NFAInitialStates
+            const unordered_set<State>& NFAInitialStates,
+            const unordered_set<Symbol>& symbols
+            );
+
+    void computeAcceptingDFAStates(
+            const unordered_map<DFAGenerator::State, set<DFAGenerator::State>>& DFAToNFAMapper,
+            const unordered_set<DFAGenerator::State>& NFAAcceptingStates
             );
 
     // T -> e-closure(T). All states reachable on any epsilon-transition on any state s in T.
@@ -45,6 +54,17 @@ private:
             const unordered_set<State>& T,
             const unordered_map<State, unordered_set<State>>& NFAEpsilonTransMap
             );
+
+    static unordered_set<State> moveNFA(
+            const set<State>& T,
+            Symbol a,
+            const unordered_map<State, unordered_map<Symbol, unordered_set<State>>>& NFATransMap
+            );
+
+    template <typename T>
+    static set<T> unorderedSetToOrderedSet(const unordered_set<T>& unorderedSet) {
+        return set<T>(unorderedSet.begin(), unorderedSet.end());
+    }
 
 };
 
