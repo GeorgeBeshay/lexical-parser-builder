@@ -103,8 +103,12 @@ DFAGenerator::computeEpsilonClosure(
         State tempState = remainingStates.top();
         remainingStates.pop();
 
-        for (auto u: NFAEpsilonTransMap.at(
-                tempState)) {        // for all states u reachable by an epsilon transition from tempState.
+        if (NFAEpsilonTransMap.find(tempState) == NFAEpsilonTransMap.end()) {
+            continue;
+        }
+
+        // for all states u reachable by an epsilon transition from tempState.
+        for (auto u: NFAEpsilonTransMap.at(tempState)) {
             if (epsilonClosure.count(u) == 0) {
                 epsilonClosure.insert(u);
                 remainingStates.push(u);
@@ -124,6 +128,12 @@ DFAGenerator::moveNFA(
 
     unordered_set<State> destinations;
     for (auto t: T) {
+        if (
+            NFATransMap.find(t) == NFATransMap.end() ||
+            NFATransMap.at(t).find(a) == NFATransMap.at(t).end()
+        ) {
+            continue;
+        }
         unordered_set<State> tempDestinations = NFATransMap.at(t).at(a);
         destinations.insert(tempDestinations.begin(), tempDestinations.end());
     }
