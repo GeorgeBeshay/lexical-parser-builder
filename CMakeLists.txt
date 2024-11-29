@@ -9,6 +9,9 @@ add_executable(
         src/main.cpp
         src/RegexScanner.cpp
         src/DFAGenerator.cpp
+        src/types.h
+        src/LexicalUtility.cpp
+        src/LexicalUtility.h
 )
 
 # Related to GoogleTest
@@ -27,6 +30,9 @@ add_executable(
         lexical-parser-builder-testing
         testing/DFAGeneratorTests.cpp
         src/DFAGenerator.cpp
+        src/types.h
+        src/LexicalUtility.cpp
+        src/LexicalUtility.h
 )
 target_link_libraries(
         lexical-parser-builder-testing

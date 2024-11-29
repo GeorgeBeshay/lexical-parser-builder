@@ -1,10 +1,6 @@
 #include <gtest/gtest.h>
 #include "../src/DFAGenerator.h"
 
-using state = DFAGenerator::state;
-using symbol = DFAGenerator::symbol;
-using clazz = DFAGenerator::clazz;
-
 TEST(DFAGeneratorTests, ConvertingSimpleNFACorrectly) {
     // Arrange
     unordered_map<state, unordered_map<symbol, unordered_set<state>>> nfaTransMap;
@@ -228,7 +224,7 @@ TEST(DFAGeneratorTests, unorderedSetToOrderedSetCorrectly) {
     unordered_set<state> s2 = {98, 12, 57, 23};
 
     // Act
-    set<state> convertedSet = DFAGenerator::unorderedSetToOrderedSet(s2);
+    set<state> convertedSet = LexicalUtility::unorderedSetToOrderedSet(s2);
 
     // expected
     set<state> s1 = {23, 12, 98, 57};

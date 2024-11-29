@@ -7,16 +7,14 @@
 #include <map>
 #include <stack>
 #include <iostream>
+#include "types.h"
+#include "LexicalUtility.h"
 
 using namespace std;
 
 class DFAGenerator {
 
 public:
-    // type aliases for better readability.
-    using state = int;
-    using symbol = char;
-    using clazz = string;
 
     DFAGenerator(
             const unordered_map<state, unordered_map<symbol, unordered_set<state>>>& nfaTransMap,
@@ -46,11 +44,6 @@ public:
         const unordered_map<state, unordered_map<symbol, unordered_set<state>>>& nfaTransMap
     );
 
-    template <typename T>
-    static set<T> unorderedSetToOrderedSet(const unordered_set<T>& unorderedSet) {
-        return set<T>(unorderedSet.begin(), unorderedSet.end());
-    }
-
 private:
     unordered_map<state, unordered_map<symbol, state>> transMap;
     unordered_map<state, clazz> acceptingStates;
@@ -67,9 +60,13 @@ private:
             );
 
     void computeAcceptingDfaStates(
-            const unordered_map<DFAGenerator::state, set<DFAGenerator::state>>& dfaToNfaMapper,
+            const unordered_map<state, set<state>>& dfaToNfaMapper,
             const unordered_map<state, clazz>& nfaAcceptingStates
             );
+
+    void minimizeDfa();
+
+    statesPartition getInitialPartition();
 
 };
 

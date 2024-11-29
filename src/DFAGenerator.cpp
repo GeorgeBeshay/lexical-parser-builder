@@ -12,6 +12,7 @@ DFAGenerator::DFAGenerator(
     initialState = 0;   // the initial DFA state is s0.
     numberOfStates = 1; // any DFA at least has 1 state.
     subsetConstruction(nfaTransMap, nfaEpsilonTransMap, nfaAcceptingStates, nfaInitialStates, symbols);
+    minimizeDfa();
 }
 
 void
@@ -28,7 +29,7 @@ DFAGenerator::subsetConstruction(
 
     // e-closure(s0)
     unordered_set<state> unorderedInitialStatesEpsilonClosure = computeEpsilonClosure(nfaInitialStates, nfaEpsilonTransMap);
-    set<state> initialStatesEpsilonClosure = unorderedSetToOrderedSet(unorderedInitialStatesEpsilonClosure);
+    set<state> initialStatesEpsilonClosure = LexicalUtility::unorderedSetToOrderedSet(unorderedInitialStatesEpsilonClosure);
     nfaToDfaMapper[initialStatesEpsilonClosure] = this->initialState;
     dfaToNfaMapper[this->initialState] = initialStatesEpsilonClosure;
 
@@ -47,7 +48,7 @@ DFAGenerator::subsetConstruction(
 
             unordered_set<state> U = computeEpsilonClosure(moveNfa(dfaToNfaMapper[tempDfaState], a, nfaTransMap),
                                                            nfaEpsilonTransMap);
-            set<state> U_ = unorderedSetToOrderedSet(U);
+            set<state> U_ = LexicalUtility::unorderedSetToOrderedSet(U);
 
             if (nfaToDfaMapper.count(U_) == 0) {
                 state newState = (this->numberOfStates)++;
@@ -68,7 +69,7 @@ DFAGenerator::subsetConstruction(
 
 void
 DFAGenerator::computeAcceptingDfaStates(
-        const unordered_map<DFAGenerator::state, set<DFAGenerator::state>>& dfaToNfaMapper,
+        const unordered_map<state, set<state>>& dfaToNfaMapper,
         const unordered_map<state, clazz>& nfaAcceptingStates
 ) {
     for (const auto& mapping: dfaToNfaMapper) {
@@ -85,7 +86,7 @@ DFAGenerator::computeAcceptingDfaStates(
     }
 }
 
-unordered_set<DFAGenerator::state>
+unordered_set<state>
 DFAGenerator::computeEpsilonClosure(
         const unordered_set<state> &originalStates,
         const unordered_map<state, unordered_set<state>> &nfaEpsilonTransMap
@@ -119,10 +120,10 @@ DFAGenerator::computeEpsilonClosure(
     return epsilonClosure;
 }
 
-unordered_set<DFAGenerator::state>
+unordered_set<state>
 DFAGenerator::moveNfa(
         const set<state> &T,
-        DFAGenerator::symbol a,
+        symbol a,
         const unordered_map<state, unordered_map<symbol, unordered_set<state>>> &nfaTransMap
 ) {
 
@@ -141,18 +142,74 @@ DFAGenerator::moveNfa(
     return destinations;
 }
 
+void
+DFAGenerator::minimizeDfa() {
+    statesPartition currentPartition = getInitialPartition();
+    statesPartition newPartition(currentPartition.size());      // the new partition size will always be >= parent partition size.
+    while (true) {
+
+        newPartition.clear();
+
+        for (auto& grp: currentPartition) {
+            statesPartition tempGrpPartition = LexicalUtility::partitionGroup(grp,currentPartition, this->transMap);
+            newPartition.insert(newPartition.end(), tempGrpPartition.begin(), tempGrpPartition.end());
+        }
+
+        if (LexicalUtility::areEqualPartitions(currentPartition, newPartition)) {
+            break;
+        } else {
+            currentPartition = newPartition;
+        }
+    }
+
+    // the final partition is currentPartition.
+    // TODO
+    // create the representative states mapping
+
+    // map the new starting state
+
+    // map the accepting states
+
+    // map the transitions from other states.
+}
+
+statesPartition
+DFAGenerator::getInitialPartition() {
+
+    // the accepting states as the first group
+    group acceptingStatesGrp;
+    for (auto& mapping: this->acceptingStates) {
+        acceptingStatesGrp.insert(mapping.first);
+    }
+
+    // the rejecting states are the second group
+    group rejectingStatesGrp;
+    for (state i = 0; i < this->numberOfStates; i++) {
+        if (acceptingStatesGrp.find(i) != acceptingStatesGrp.cend()) {
+            rejectingStatesGrp.insert(i);
+        }
+    }
+
+    statesPartition p {
+        acceptingStatesGrp,
+        rejectingStatesGrp
+    };
+
+    return p;
+}
+
 // getters
-unordered_map<DFAGenerator::state, unordered_map<DFAGenerator::symbol, DFAGenerator::state>>
+unordered_map<state, unordered_map<symbol , state>>
 DFAGenerator::getTransMap() const {
     return transMap;
 }
 
-unordered_map<DFAGenerator::state, DFAGenerator::clazz>
+unordered_map<state , clazz>
 DFAGenerator::getAcceptingStates() const {
     return acceptingStates;
 }
 
-DFAGenerator::state
+state
 DFAGenerator::getInitialState() const {
     return initialState;
 }
