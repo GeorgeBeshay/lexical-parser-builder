@@ -14,8 +14,7 @@ TEST(TransitionTableContainerTests, ConvertingSimpleDFACorrectly) {
             {
                     0,
                     {
-                            {'a', 0},
-                            {'b', 0}
+                            {'a', 0}
                     }
             },
     };
@@ -28,7 +27,7 @@ TEST(TransitionTableContainerTests, ConvertingSimpleDFACorrectly) {
     TransitionTableContainer ttContainer(dfaTransMap, acceptingStates, initialState, numberOfStates, symbols);
 
     // Expected data
-    vector<vector<int>> expectedTransitionTable({{0, 0}});
+    vector<vector<int>> expectedTransitionTable({{-1, 0}});
 
     // Assert
     EXPECT_EQ(expectedTransitionTable, ttContainer.getTransitionTable());

@@ -39,7 +39,7 @@ public:
             state initialState,
             int numberOfStates,
             unordered_set<symbol> symbols
-            ) : transitionTable(numberOfStates, vector<int>(symbols.size(), 0)) {
+            ) : transitionTable(numberOfStates, vector<int>(symbols.size(), -1)) {
 
         createTransitionTable(transMap, acceptingStates, initialState, symbols);
     }
