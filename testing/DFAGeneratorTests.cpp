@@ -1,17 +1,17 @@
 #include <gtest/gtest.h>
 #include "../src/DFAGenerator.h"
 
-using State = DFAGenerator::state;
-using Symbol = DFAGenerator::symbol;
-using Class = DFAGenerator::clazz;
+using state = DFAGenerator::state;
+using symbol = DFAGenerator::symbol;
+using clazz = DFAGenerator::clazz;
 
 TEST(DFAGeneratorTests, ConvertingSimpleNFACorrectly) {
     // Arrange
-    unordered_map<State, unordered_map<Symbol, unordered_set<State>>> nfaTransMap;
-    unordered_map<State, unordered_set<State>> nfaEpsilonTransMap;
-    unordered_map<State, Class> nfaAcceptingStates;
-    unordered_set<State> nfaInitialStates;
-    unordered_set<Symbol> symbols;
+    unordered_map<state, unordered_map<symbol, unordered_set<state>>> nfaTransMap;
+    unordered_map<state, unordered_set<state>> nfaEpsilonTransMap;
+    unordered_map<state, clazz> nfaAcceptingStates;
+    unordered_set<state> nfaInitialStates;
+    unordered_set<symbol> symbols;
     DFAGenerator* dfaGen = nullptr;
 
 
@@ -42,7 +42,7 @@ TEST(DFAGeneratorTests, ConvertingSimpleNFACorrectly) {
     dfaGen = new DFAGenerator(nfaTransMap, nfaEpsilonTransMap, nfaAcceptingStates, nfaInitialStates, symbols);
 
     // expected data
-    unordered_map<State, unordered_map<Symbol, State>>
+    unordered_map<state, unordered_map<symbol, state>>
         expectedDfaTransMap = {
         {
             0,
@@ -52,8 +52,8 @@ TEST(DFAGeneratorTests, ConvertingSimpleNFACorrectly) {
             }
         },
     };
-    unordered_map<State, Class> expectedAcceptingStates{{0, "id"}};
-    State expectedInitialState {0};
+    unordered_map<state, clazz> expectedAcceptingStates{{0, "id"}};
+    state expectedInitialState {0};
     int expectedNumberOfStates {1};
 
     // Assert
@@ -67,11 +67,11 @@ TEST(DFAGeneratorTests, ConvertingSimpleNFACorrectly) {
 // lecture example
 TEST(DFAGeneratorTests, ConvertingComplexNFACorrectly) {
     // Arrange
-    unordered_map<State, unordered_map<Symbol, unordered_set<State>>> nfaTransMap;
-    unordered_map<State, unordered_set<State>> nfaEpsilonTransMap;
-    unordered_map<State, Class> nfaAcceptingStates;
-    unordered_set<State> nfaInitialStates;
-    unordered_set<Symbol> symbols;
+    unordered_map<state, unordered_map<symbol, unordered_set<state>>> nfaTransMap;
+    unordered_map<state, unordered_set<state>> nfaEpsilonTransMap;
+    unordered_map<state, clazz> nfaAcceptingStates;
+    unordered_set<state> nfaInitialStates;
+    unordered_set<symbol> symbols;
     DFAGenerator* dfaGen = nullptr;
 
     nfaAcceptingStates = {{10, "while"}};
@@ -121,7 +121,7 @@ TEST(DFAGeneratorTests, ConvertingComplexNFACorrectly) {
     dfaGen = new DFAGenerator(nfaTransMap, nfaEpsilonTransMap, nfaAcceptingStates, nfaInitialStates, symbols);
 
     // expected data
-    unordered_map<State, unordered_map<Symbol, State>>
+    unordered_map<state, unordered_map<symbol, state>>
         expectedDfaTransMap = {
         {
             0,
@@ -159,8 +159,8 @@ TEST(DFAGeneratorTests, ConvertingComplexNFACorrectly) {
             }
         }
     };
-    unordered_map<State, Class> expectedAcceptingStates{{4, "while"}};
-    State expectedInitialState {0};
+    unordered_map<state, clazz> expectedAcceptingStates{{4, "while"}};
+    state expectedInitialState {0};
     int expectedNumberOfStates {5};
 
     // Assert
@@ -173,10 +173,10 @@ TEST(DFAGeneratorTests, ConvertingComplexNFACorrectly) {
 
 TEST(DFAGeneratorTests, moveNFACorrectly) {
     // Arrange
-    set<State> srcStates {
+    set<state> srcStates {
       0, 1, 2, 4, 7
     };
-    unordered_map<State, unordered_map<Symbol, unordered_set<State>>> nfaTransMap = {
+    unordered_map<state, unordered_map<symbol, unordered_set<state>>> nfaTransMap = {
         {
             2,
             {
@@ -208,14 +208,14 @@ TEST(DFAGeneratorTests, moveNFACorrectly) {
             }
         }
     };
-    Symbol s = 'a';
+    symbol s = 'a';
 
 
     // Act
-    unordered_set<State> destinationStates = DFAGenerator::moveNfa(srcStates, s, nfaTransMap);
+    unordered_set<state> destinationStates = DFAGenerator::moveNfa(srcStates, s, nfaTransMap);
 
     // expected data
-    unordered_set<State> expectedDestinationStates {
+    unordered_set<state> expectedDestinationStates {
         8, 3
     };
 
@@ -225,13 +225,13 @@ TEST(DFAGeneratorTests, moveNFACorrectly) {
 
 TEST(DFAGeneratorTests, unorderedSetToOrderedSetCorrectly) {
     // Arrange
-    unordered_set<State> s2 = {98, 12, 57, 23};
+    unordered_set<state> s2 = {98, 12, 57, 23};
 
     // Act
-    set<State> convertedSet = DFAGenerator::unorderedSetToOrderedSet(s2);
+    set<state> convertedSet = DFAGenerator::unorderedSetToOrderedSet(s2);
 
     // expected
-    set<State> s1 = {23, 12, 98, 57};
+    set<state> s1 = {23, 12, 98, 57};
 
     // Assert
     ASSERT_EQ(s1, convertedSet);
@@ -239,22 +239,22 @@ TEST(DFAGeneratorTests, unorderedSetToOrderedSetCorrectly) {
 
 TEST(DFAGeneratorTests, computeEpsilonClosureCorrectly) {
     // Arrange
-    unordered_map<State, unordered_set<State>> nfaEpsilonTransMap = {
+    unordered_map<state, unordered_set<state>> nfaEpsilonTransMap = {
         {0, {1, 7}},
         {1, {2, 4}},
         {3, {6}},
         {5, {6}},
         {6, {1, 7}},
     };
-    unordered_set<State> originalStates {
+    unordered_set<state> originalStates {
         6, 0, 1
     };
 
     // Act
-    unordered_set<State> destinationStates = DFAGenerator::computeEpsilonClosure(originalStates, nfaEpsilonTransMap);
+    unordered_set<state> destinationStates = DFAGenerator::computeEpsilonClosure(originalStates, nfaEpsilonTransMap);
 
     // expected
-    unordered_set<State> expectedDestinationStates{
+    unordered_set<state> expectedDestinationStates{
         0, 1, 6, 7, 2, 4,
     };
 
