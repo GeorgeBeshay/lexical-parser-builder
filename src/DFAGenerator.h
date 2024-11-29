@@ -12,11 +12,12 @@ public:
     // type aliases for better readability.
     using State = int;
     using Symbol = char;
+    using Class = string;
 
     DFAGenerator(
             const unordered_map<State, unordered_map<Symbol, unordered_set<State>>>& NFATransMap,
             const unordered_map<State, unordered_set<State>>& NFAEpsilonTransMap,
-            const unordered_set<State>& NFAAcceptingStates,
+            const unordered_map<State, Class>& NFAAcceptingStates,
             const unordered_set<State>& NFAInitialStates,
             const unordered_set<Symbol>& symbols
             );
@@ -25,7 +26,7 @@ public:
     // marked with 'const' to indicate that this method should not modify any of the object fields.
     // Can be safely called on const DFAGenerator objects.
     unordered_map<State, unordered_map<Symbol, State>> getTransMap() const;
-    unordered_set<State> getAcceptingStates() const;
+    unordered_map<State, Class> getAcceptingStates() const;
     State getInitialState() const;
     int getNumberOfStates() const;
 
@@ -48,7 +49,7 @@ public:
 
 private:
     unordered_map<State, unordered_map<Symbol, State>> transMap;
-    unordered_set<State> acceptingStates;
+    unordered_map<State, Class> acceptingStates;
     State initialState;
     int numberOfStates;
 
@@ -56,14 +57,14 @@ private:
     void subsetConstruction(
             const unordered_map<State, unordered_map<Symbol, unordered_set<State>>>& NFATransMap,
             const unordered_map<State, unordered_set<State>>& NFAEpsilonTransMap,
-            const unordered_set<State>& NFAAcceptingStates,
+            const unordered_map<State, Class>& NFAAcceptingStates,
             const unordered_set<State>& NFAInitialStates,
             const unordered_set<Symbol>& symbols
             );
 
     void computeAcceptingDFAStates(
             const unordered_map<DFAGenerator::State, set<DFAGenerator::State>>& DFAToNFAMapper,
-            const unordered_set<DFAGenerator::State>& NFAAcceptingStates
+            const unordered_map<State, Class>& NFAAcceptingStates
             );
 
 };

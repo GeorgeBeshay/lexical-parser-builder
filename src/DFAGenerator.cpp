@@ -3,7 +3,7 @@
 DFAGenerator::DFAGenerator(
         const unordered_map<State, unordered_map<Symbol, unordered_set<State>>> &NFATransMap,
         const unordered_map<State, unordered_set<State>> &NFAEpsilonTransMap,
-        const unordered_set<State> &NFAAcceptingStates,
+        const unordered_map<State, Class> &NFAAcceptingStates,
         const unordered_set<State> &NFAInitialStates,
         const unordered_set<Symbol> &symbols
 ) {
@@ -18,7 +18,7 @@ void
 DFAGenerator::subsetConstruction(
         const unordered_map<State, unordered_map<Symbol, unordered_set<State>>> &NFATransMap,
         const unordered_map<State, unordered_set<State>> &NFAEpsilonTransMap,
-        const unordered_set<State> &NFAAcceptingStates,
+        const unordered_map<State, Class> &NFAAcceptingStates,
         const unordered_set<State> &NFAInitialStates,
         const unordered_set<Symbol> &symbols
 ) {
@@ -69,18 +69,18 @@ DFAGenerator::subsetConstruction(
 void
 DFAGenerator::computeAcceptingDFAStates(
         const unordered_map<DFAGenerator::State, set<DFAGenerator::State>>& DFAToNFAMapper,
-        const unordered_set<DFAGenerator::State>& NFAAcceptingStates
+        const unordered_map<State, Class>& NFAAcceptingStates
 ) {
     for (const auto& mapping: DFAToNFAMapper) {
-        bool isAccepting = false;
+        Class correspondingAcceptedClass;
         for (auto tempNFAState: mapping.second) {
             if (NFAAcceptingStates.find(tempNFAState) != NFAAcceptingStates.end()) {
-                isAccepting = true;
+                correspondingAcceptedClass = NFAAcceptingStates.at(tempNFAState);
                 break;
             }
         }
-        if (isAccepting) {
-            this->acceptingStates.insert(mapping.first);
+        if (!correspondingAcceptedClass.empty()) {         // if not "", then it is accepting, and we know its class.
+            this->acceptingStates[mapping.first] = correspondingAcceptedClass;
         }
     }
 }
@@ -147,7 +147,7 @@ DFAGenerator::getTransMap() const {
     return transMap;
 }
 
-unordered_set<DFAGenerator::State>
+unordered_map<DFAGenerator::State, DFAGenerator::Class>
 DFAGenerator::getAcceptingStates() const {
     return acceptingStates;
 }
