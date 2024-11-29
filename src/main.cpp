@@ -6,7 +6,7 @@
 using namespace std;
 
 int main() {
-    string filePath = "../../inputs/LexicalRulesInput.txt";
+    string filePath = "../inputs/LexicalRulesInput.txt";
     RegexScanner regexScanner(filePath);
     regexScanner.printOutput();
     return 0;
