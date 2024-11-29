@@ -1,7 +1,11 @@
 #ifndef LEXICAL_PARSER_BUILDER_DFAGENERATOR_H
 #define LEXICAL_PARSER_BUILDER_DFAGENERATOR_H
 
-#include <bits/stdc++.h>
+#include <unordered_set>
+#include <unordered_map>
+#include <set>
+#include <map>
+#include <stack>
 #include <iostream>
 
 using namespace std;
@@ -10,36 +14,36 @@ class DFAGenerator {
 
 public:
     // type aliases for better readability.
-    using State = int;
-    using Symbol = char;
-    using Class = string;
+    using state = int;
+    using symbol = char;
+    using clazz = string;
 
     DFAGenerator(
-            const unordered_map<State, unordered_map<Symbol, unordered_set<State>>>& NFATransMap,
-            const unordered_map<State, unordered_set<State>>& NFAEpsilonTransMap,
-            const unordered_map<State, Class>& NFAAcceptingStates,
-            const unordered_set<State>& NFAInitialStates,
-            const unordered_set<Symbol>& symbols
+            const unordered_map<state, unordered_map<symbol, unordered_set<state>>>& nfaTransMap,
+            const unordered_map<state, unordered_set<state>>& nfaEpsilonTransMap,
+            const unordered_map<state, clazz>& nfaAcceptingStates,
+            const unordered_set<state>& nfaInitialStates,
+            const unordered_set<symbol>& symbols
             );
 
     // getters
     // marked with 'const' to indicate that this method should not modify any of the object fields.
     // Can be safely called on const DFAGenerator objects.
-    unordered_map<State, unordered_map<Symbol, State>> getTransMap() const;
-    unordered_map<State, Class> getAcceptingStates() const;
-    State getInitialState() const;
+    unordered_map<state, unordered_map<symbol, state>> getTransMap() const;
+    unordered_map<state, clazz> getAcceptingStates() const;
+    state getInitialState() const;
     int getNumberOfStates() const;
 
-    // T -> e-closure(T). All states reachable on any epsilon-transition on any state s in T.
-    static unordered_set<State> computeEpsilonClosure(
-        const unordered_set<State>& T,
-        const unordered_map<State, unordered_set<State>>& NFAEpsilonTransMap
+    // originalStates -> e-closure(originalStates). All states reachable on any epsilon-transition on any state s in originalStates.
+    static unordered_set<state> computeEpsilonClosure(
+        const unordered_set<state>& originalStates,
+        const unordered_map<state, unordered_set<state>>& nfaEpsilonTransMap
     );
 
-    static unordered_set<State> moveNFA(
-        const set<State>& T,
-        Symbol a,
-        const unordered_map<State, unordered_map<Symbol, unordered_set<State>>>& NFATransMap
+    static unordered_set<state> moveNfa(
+        const set<state>& T,
+        symbol a,
+        const unordered_map<state, unordered_map<symbol, unordered_set<state>>>& nfaTransMap
     );
 
     template <typename T>
@@ -48,23 +52,23 @@ public:
     }
 
 private:
-    unordered_map<State, unordered_map<Symbol, State>> transMap;
-    unordered_map<State, Class> acceptingStates;
-    State initialState;
+    unordered_map<state, unordered_map<symbol, state>> transMap;
+    unordered_map<state, clazz> acceptingStates;
+    state initialState;
     int numberOfStates;
 
     // core algorithm
     void subsetConstruction(
-            const unordered_map<State, unordered_map<Symbol, unordered_set<State>>>& NFATransMap,
-            const unordered_map<State, unordered_set<State>>& NFAEpsilonTransMap,
-            const unordered_map<State, Class>& NFAAcceptingStates,
-            const unordered_set<State>& NFAInitialStates,
-            const unordered_set<Symbol>& symbols
+            const unordered_map<state, unordered_map<symbol, unordered_set<state>>>& nfaTransMap,
+            const unordered_map<state, unordered_set<state>>& nfaEpsilonTransMap,
+            const unordered_map<state, clazz>& nfaAcceptingStates,
+            const unordered_set<state>& nfaInitialStates,
+            const unordered_set<symbol>& symbols
             );
 
-    void computeAcceptingDFAStates(
-            const unordered_map<DFAGenerator::State, set<DFAGenerator::State>>& DFAToNFAMapper,
-            const unordered_map<State, Class>& NFAAcceptingStates
+    void computeAcceptingDfaStates(
+            const unordered_map<DFAGenerator::state, set<DFAGenerator::state>>& dfaToNfaMapper,
+            const unordered_map<state, clazz>& nfaAcceptingStates
             );
 
 };

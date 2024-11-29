@@ -1,81 +1,81 @@
 #include "DFAGenerator.h"
 
 DFAGenerator::DFAGenerator(
-        const unordered_map<State, unordered_map<Symbol, unordered_set<State>>> &NFATransMap,
-        const unordered_map<State, unordered_set<State>> &NFAEpsilonTransMap,
-        const unordered_map<State, Class> &NFAAcceptingStates,
-        const unordered_set<State> &NFAInitialStates,
-        const unordered_set<Symbol> &symbols
+        const unordered_map<state, unordered_map<symbol, unordered_set<state>>> &nfaTransMap,
+        const unordered_map<state, unordered_set<state>> &nfaEpsilonTransMap,
+        const unordered_map<state, clazz> &nfaAcceptingStates,
+        const unordered_set<state> &nfaInitialStates,
+        const unordered_set<symbol> &symbols
 ) {
     transMap = {};
     acceptingStates = {};
     initialState = 0;   // the initial DFA state is s0.
     numberOfStates = 1; // any DFA at least has 1 state.
-    subsetConstruction(NFATransMap, NFAEpsilonTransMap, NFAAcceptingStates, NFAInitialStates, symbols);
+    subsetConstruction(nfaTransMap, nfaEpsilonTransMap, nfaAcceptingStates, nfaInitialStates, symbols);
 }
 
 void
 DFAGenerator::subsetConstruction(
-        const unordered_map<State, unordered_map<Symbol, unordered_set<State>>> &NFATransMap,
-        const unordered_map<State, unordered_set<State>> &NFAEpsilonTransMap,
-        const unordered_map<State, Class> &NFAAcceptingStates,
-        const unordered_set<State> &NFAInitialStates,
-        const unordered_set<Symbol> &symbols
+        const unordered_map<state, unordered_map<symbol, unordered_set<state>>> &nfaTransMap,
+        const unordered_map<state, unordered_set<state>> &nfaEpsilonTransMap,
+        const unordered_map<state, clazz> &nfaAcceptingStates,
+        const unordered_set<state> &nfaInitialStates,
+        const unordered_set<symbol> &symbols
 ) {
 
-    map<set<State>, State> NFAToDFAMapper;
-    unordered_map<State, set<State>> DFAToNFAMapper;
+    map<set<state>, state> nfaToDfaMapper;
+    unordered_map<state, set<state>> dfaToNfaMapper;
 
     // e-closure(s0)
-    unordered_set<State> unorderedInitialStatesEpsilonClosure = computeEpsilonClosure(NFAInitialStates, NFAEpsilonTransMap);
-    set<State> initialStatesEpsilonClosure = unorderedSetToOrderedSet(unorderedInitialStatesEpsilonClosure);
-    NFAToDFAMapper[initialStatesEpsilonClosure] = this->initialState;
-    DFAToNFAMapper[this->initialState] = initialStatesEpsilonClosure;
+    unordered_set<state> unorderedInitialStatesEpsilonClosure = computeEpsilonClosure(nfaInitialStates, nfaEpsilonTransMap);
+    set<state> initialStatesEpsilonClosure = unorderedSetToOrderedSet(unorderedInitialStatesEpsilonClosure);
+    nfaToDfaMapper[initialStatesEpsilonClosure] = this->initialState;
+    dfaToNfaMapper[this->initialState] = initialStatesEpsilonClosure;
 
-    stack<State> unmarkedStates;        // contains the DFA unmarked states.
+    stack<state> unmarkedStates;        // contains the DFA unmarked states.
     unmarkedStates.push(this->initialState);    // initially, the s0 state is only unmarked.
-    unordered_set<State> markedStates;
+    unordered_set<state> markedStates;
 
     while (!unmarkedStates.empty()) {
 
-        State tempDFAState = unmarkedStates.top();
+        state tempDfaState = unmarkedStates.top();
         unmarkedStates.pop();
-        if (markedStates.count(tempDFAState) != 0) continue;
-        markedStates.insert(tempDFAState);
+        if (markedStates.count(tempDfaState) != 0) continue;
+        markedStates.insert(tempDfaState);
 
-        for (Symbol a: symbols) {
+        for (symbol a: symbols) {
 
-            unordered_set<State> U = computeEpsilonClosure(moveNFA(DFAToNFAMapper[tempDFAState], a, NFATransMap),
-                                                           NFAEpsilonTransMap);
-            set<State> U_ = unorderedSetToOrderedSet(U);
+            unordered_set<state> U = computeEpsilonClosure(moveNfa(dfaToNfaMapper[tempDfaState], a, nfaTransMap),
+                                                           nfaEpsilonTransMap);
+            set<state> U_ = unorderedSetToOrderedSet(U);
 
-            if (NFAToDFAMapper.count(U_) == 0) {
-                State newState = (this->numberOfStates)++;
-                NFAToDFAMapper[U_] = newState;
-                DFAToNFAMapper[newState] = U_;
+            if (nfaToDfaMapper.count(U_) == 0) {
+                state newState = (this->numberOfStates)++;
+                nfaToDfaMapper[U_] = newState;
+                dfaToNfaMapper[newState] = U_;
                 unmarkedStates.push(newState);
             }
 
-            this->transMap[tempDFAState][a] = NFAToDFAMapper[U_];
+            this->transMap[tempDfaState][a] = nfaToDfaMapper[U_];
 
         }
 
     }
 
-    computeAcceptingDFAStates(DFAToNFAMapper, NFAAcceptingStates);
+    computeAcceptingDfaStates(dfaToNfaMapper, nfaAcceptingStates);
 
 }
 
 void
-DFAGenerator::computeAcceptingDFAStates(
-        const unordered_map<DFAGenerator::State, set<DFAGenerator::State>>& DFAToNFAMapper,
-        const unordered_map<State, Class>& NFAAcceptingStates
+DFAGenerator::computeAcceptingDfaStates(
+        const unordered_map<DFAGenerator::state, set<DFAGenerator::state>>& dfaToNfaMapper,
+        const unordered_map<state, clazz>& nfaAcceptingStates
 ) {
-    for (const auto& mapping: DFAToNFAMapper) {
-        Class correspondingAcceptedClass;
-        for (auto tempNFAState: mapping.second) {
-            if (NFAAcceptingStates.find(tempNFAState) != NFAAcceptingStates.end()) {
-                correspondingAcceptedClass = NFAAcceptingStates.at(tempNFAState);
+    for (const auto& mapping: dfaToNfaMapper) {
+        clazz correspondingAcceptedClass;
+        for (auto tempNfaState: mapping.second) {
+            if (nfaAcceptingStates.find(tempNfaState) != nfaAcceptingStates.end()) {
+                correspondingAcceptedClass = nfaAcceptingStates.at(tempNfaState);
                 break;
             }
         }
@@ -85,30 +85,30 @@ DFAGenerator::computeAcceptingDFAStates(
     }
 }
 
-unordered_set<DFAGenerator::State>
+unordered_set<DFAGenerator::state>
 DFAGenerator::computeEpsilonClosure(
-        const unordered_set<State> &T,
-        const unordered_map<State, unordered_set<State>> &NFAEpsilonTransMap
+        const unordered_set<state> &originalStates,
+        const unordered_map<state, unordered_set<state>> &nfaEpsilonTransMap
 ) {
-    unordered_set<State> epsilonClosure;
-    stack<State> remainingStates;
+    unordered_set<state> epsilonClosure;
+    stack<state> remainingStates;
 
     // pushing all states into the stack.
-    for (auto t: T) {
+    for (auto t: originalStates) {
         remainingStates.push(t);
         epsilonClosure.insert(t);
     }
 
     while (!remainingStates.empty()) {
-        State tempState = remainingStates.top();
+        state tempState = remainingStates.top();
         remainingStates.pop();
 
-        if (NFAEpsilonTransMap.find(tempState) == NFAEpsilonTransMap.end()) {
+        if (nfaEpsilonTransMap.find(tempState) == nfaEpsilonTransMap.end()) {
             continue;
         }
 
         // for all states u reachable by an epsilon transition from tempState.
-        for (auto u: NFAEpsilonTransMap.at(tempState)) {
+        for (auto u: nfaEpsilonTransMap.at(tempState)) {
             if (epsilonClosure.count(u) == 0) {
                 epsilonClosure.insert(u);
                 remainingStates.push(u);
@@ -119,22 +119,22 @@ DFAGenerator::computeEpsilonClosure(
     return epsilonClosure;
 }
 
-unordered_set<DFAGenerator::State>
-DFAGenerator::moveNFA(
-        const set<State> &T,
-        DFAGenerator::Symbol a,
-        const unordered_map<State, unordered_map<Symbol, unordered_set<State>>> &NFATransMap
+unordered_set<DFAGenerator::state>
+DFAGenerator::moveNfa(
+        const set<state> &T,
+        DFAGenerator::symbol a,
+        const unordered_map<state, unordered_map<symbol, unordered_set<state>>> &nfaTransMap
 ) {
 
-    unordered_set<State> destinations;
+    unordered_set<state> destinations;
     for (auto t: T) {
         if (
-            NFATransMap.find(t) == NFATransMap.end() ||
-            NFATransMap.at(t).find(a) == NFATransMap.at(t).end()
+            nfaTransMap.find(t) == nfaTransMap.end() ||
+            nfaTransMap.at(t).find(a) == nfaTransMap.at(t).end()
         ) {
             continue;
         }
-        unordered_set<State> tempDestinations = NFATransMap.at(t).at(a);
+        unordered_set<state> tempDestinations = nfaTransMap.at(t).at(a);
         destinations.insert(tempDestinations.begin(), tempDestinations.end());
     }
 
@@ -142,17 +142,17 @@ DFAGenerator::moveNFA(
 }
 
 // getters
-unordered_map<DFAGenerator::State, unordered_map<DFAGenerator::Symbol, DFAGenerator::State>>
+unordered_map<DFAGenerator::state, unordered_map<DFAGenerator::symbol, DFAGenerator::state>>
 DFAGenerator::getTransMap() const {
     return transMap;
 }
 
-unordered_map<DFAGenerator::State, DFAGenerator::Class>
+unordered_map<DFAGenerator::state, DFAGenerator::clazz>
 DFAGenerator::getAcceptingStates() const {
     return acceptingStates;
 }
 
-DFAGenerator::State
+DFAGenerator::state
 DFAGenerator::getInitialState() const {
     return initialState;
 }
