@@ -7,6 +7,8 @@
 
 using namespace std;
 
+#define REJECTING_STATE (-1)
+
 // type aliases for better readability.
 using state = int;
 using symbol = char;

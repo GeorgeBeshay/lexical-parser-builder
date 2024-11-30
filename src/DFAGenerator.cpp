@@ -11,8 +11,10 @@ DFAGenerator::DFAGenerator(
     acceptingStates = {};
     initialState = 0;   // the initial DFA state is s0.
     numberOfStates = 1; // any DFA at least has 1 state.
+    languageSymbols = symbols;
     subsetConstruction(nfaTransMap, nfaEpsilonTransMap, nfaAcceptingStates, nfaInitialStates, symbols);
     minimizeDfa();
+    compactDfa();
 }
 
 void
@@ -49,6 +51,10 @@ DFAGenerator::subsetConstruction(
             unordered_set<state> U = computeEpsilonClosure(moveNfa(dfaToNfaMapper[tempDfaState], a, nfaTransMap),
                                                            nfaEpsilonTransMap);
             set<state> U_ = LexicalUtility::unorderedSetToOrderedSet(U);
+
+            if (U_.empty()) {
+                continue;   // to prevent creating a rejecting state.
+            }
 
             if (nfaToDfaMapper.count(U_) == 0) {
                 state newState = (this->numberOfStates)++;
@@ -146,13 +152,21 @@ void
 DFAGenerator::minimizeDfa() {
 
     statesPartition currentPartition = getInitialPartition();
-    statesPartition newPartition(currentPartition.size());      // the new partition size will always be >= parent partition size.
+    statesPartition newPartition;
     while (true) {
         newPartition.clear();
 
         for (auto& grp: currentPartition) {
-            statesPartition tempGrpPartition = LexicalUtility::partitionGroup(grp,currentPartition, this->transMap);
-            newPartition.insert(newPartition.end(), tempGrpPartition.begin(), tempGrpPartition.end());
+            statesPartition tempGrpPartition = LexicalUtility::partitionGroup(
+                grp,
+                currentPartition,
+                this->transMap,
+                this->languageSymbols
+                );
+
+            for (auto& subgroup: tempGrpPartition) {
+                newPartition.push_back(subgroup);
+            }
         }
 
         if (LexicalUtility::areEqualPartitions(currentPartition, newPartition)) {
@@ -182,13 +196,9 @@ DFAGenerator::minimizeDfa() {
         }
     }
 
-    this->numberOfStates = (int)representativeStates.size();
-    this->initialState = representativeStatesMapper[this->initialState];
-    this->acceptingStates = std::move(newAcceptingStates);
-
     // map the existing transMap to a new one based on the representative states.
     for (auto& outerMapping: transMap) {
-        if (representativeStates.find(outerMapping.first) != representativeStates.end()) {
+        if (representativeStates.count(outerMapping.first) != 0) {
             unordered_map<symbol, state> newInnerMapping;
             for (auto& innerMapping: outerMapping.second) {
                 newInnerMapping[innerMapping.first] = representativeStatesMapper[innerMapping.second];
@@ -197,19 +207,27 @@ DFAGenerator::minimizeDfa() {
         }
     }
 
+    this->numberOfStates = (int)representativeStates.size();
+    this->initialState = representativeStatesMapper[this->initialState];
+    this->acceptingStates = std::move(newAcceptingStates);
+    this->transMap = newTransMap;
+
 }
 
 statesPartition
 DFAGenerator::getInitialPartition() {
 
     // the partition will be on the form: {G_accepting_c1, G_accepting_c2, ..., G_accepting_cN, G_rejecting}
-    size_t initialPartitionSize = (this->acceptingStates.size()) + 1;
+    size_t initialPartitionSize = (
+        (this->numberOfStates == this->acceptingStates.size())
+        ? this->acceptingStates.size()
+        : (this->acceptingStates.size()+1)
+        );
     statesPartition p(initialPartitionSize);
     unordered_map<clazz, int> acceptingClassToPartitionGrpMapper;
 
     for (state i = 0; i < this->numberOfStates; i++) {
-        if (this->acceptingStates.find(i) != this->acceptingStates.cend()) {
-            // is accepting state
+        if (this->acceptingStates.count(i) != 0) {      // 'i' is an accepting state
             clazz acceptedClass = this->acceptingStates[i];
             if (acceptingClassToPartitionGrpMapper.count(acceptedClass) == 0) {
                 acceptingClassToPartitionGrpMapper[acceptedClass] = (int) acceptingClassToPartitionGrpMapper.size();
@@ -223,6 +241,41 @@ DFAGenerator::getInitialPartition() {
     return p;
 }
 
+/**
+ * re-define each state and its transition to start counting from 0.
+ * This is because the previous approach would result in a scattered states ids like having the states: {2, 5, 8, 3}
+ * instead of {0, 1, 2, 3}.
+ */
+void
+DFAGenerator::compactDfa() {
+    unordered_map<state, state> newStateIds{{this->initialState, 0}};
+
+    state nextStateId = 1;
+    for (auto& transition: transMap) {
+        if (newStateIds.count(transition.first) == 0) {
+            newStateIds[transition.first] = nextStateId++;
+        }
+    }
+
+    unordered_map<state, clazz> compactAcceptingStates;
+    for (auto& acceptingStateMapping: this->acceptingStates) {
+        compactAcceptingStates[newStateIds[acceptingStateMapping.first]] = acceptingStateMapping.second;
+    }
+
+    unordered_map<state, unordered_map<symbol, state>> compactTransMap;
+    for (auto& transitionMapping: this->transMap) {
+        unordered_map<symbol, state> tempCompactInnerMapping;
+        for (auto& innerMapping: transitionMapping.second) {
+            tempCompactInnerMapping[innerMapping.first] = newStateIds[innerMapping.second];
+        }
+        compactTransMap[newStateIds[transitionMapping.first]] = tempCompactInnerMapping;
+    }
+
+    this->initialState = newStateIds[this->initialState];
+    this->acceptingStates = compactAcceptingStates;
+    this->transMap = compactTransMap;
+}
+
 // getters
 unordered_map<state, unordered_map<symbol , state>>
 DFAGenerator::getTransMap() const {
@@ -232,6 +285,11 @@ DFAGenerator::getTransMap() const {
 unordered_map<state , clazz>
 DFAGenerator::getAcceptingStates() const {
     return acceptingStates;
+}
+
+unordered_set<symbol>
+DFAGenerator::getLanguageSymbols() const {
+    return languageSymbols;
 }
 
 state

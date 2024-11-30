@@ -58,6 +58,7 @@ TEST(DFAGeneratorTests, ConvertingSimpleNFACorrectly) {
     EXPECT_EQ(dfaGen->getAcceptingStates(), expectedAcceptingStates);
     EXPECT_EQ(dfaGen->getInitialState(), expectedInitialState);
     EXPECT_EQ(dfaGen->getNumberOfStates(), expectedNumberOfStates);
+    EXPECT_EQ(dfaGen->getLanguageSymbols(), symbols);
 }
 
 // lecture example
@@ -122,42 +123,35 @@ TEST(DFAGeneratorTests, ConvertingComplexNFACorrectly) {
         {
             0,
             {
-                {'a', 2},
-                {'b', 1}
-            }
-        },
-        {
-            2,
-            {
-                {'a', 2},
-                {'b', 3}
+                {'a', 1},
+                {'b', 0}
             }
         },
         {
             1,
             {
-                {'a', 2},
-                {'b', 1}
+                {'a', 1},
+                {'b', 2}
+            }
+        },
+        {
+            2,
+            {
+                {'a', 1},
+                {'b', 3}
             }
         },
         {
             3,
             {
-                {'a', 2},
-                {'b', 4}
-            }
-        },
-        {
-            4,
-            {
-                {'a', 2},
-                {'b', 1}
+                {'a', 1},
+                {'b', 0}
             }
         }
     };
-    unordered_map<state, clazz> expectedAcceptingStates{{4, "while"}};
+    unordered_map<state, clazz> expectedAcceptingStates{{3, "while"}};
     state expectedInitialState {0};
-    int expectedNumberOfStates {5};
+    int expectedNumberOfStates {4};
 
     // Assert
     ASSERT_NE(dfaGen, nullptr);
@@ -165,6 +159,67 @@ TEST(DFAGeneratorTests, ConvertingComplexNFACorrectly) {
     EXPECT_EQ(dfaGen->getAcceptingStates(), expectedAcceptingStates);
     EXPECT_EQ(dfaGen->getInitialState(), expectedInitialState);
     EXPECT_EQ(dfaGen->getNumberOfStates(), expectedNumberOfStates);
+    EXPECT_EQ(dfaGen->getLanguageSymbols(), symbols);
+}
+
+TEST(DFAGeneratorTests, ConvertingSimpleNFAWithRejectingStatesCorrectly) {
+    // Arrange
+    unordered_map<state, unordered_map<symbol, unordered_set<state>>> nfaTransMap;
+    unordered_map<state, unordered_set<state>> nfaEpsilonTransMap;
+    unordered_map<state, clazz> nfaAcceptingStates;
+    unordered_set<state> nfaInitialStates;
+    unordered_set<symbol> symbols;
+    DFAGenerator* dfaGen = nullptr;
+
+
+    nfaAcceptingStates = {{1, "id"}};
+    nfaInitialStates = {0};
+    symbols = {'a', 'b', 'c'};
+    nfaEpsilonTransMap = {
+        {0, {1}},
+    };
+    nfaTransMap = {
+        {
+            0,
+            {
+                {'a', {0}},
+                {'b', {1}}
+            }
+        },
+        {
+            1,
+            {
+                {'a', {1}},
+                {'b', {0}}
+            }
+        }
+    };
+
+    // Act
+    dfaGen = new DFAGenerator(nfaTransMap, nfaEpsilonTransMap, nfaAcceptingStates, nfaInitialStates, symbols);
+
+    // expected data
+    unordered_map<state, unordered_map<symbol, state>>
+        expectedDfaTransMap = {
+        {
+            0,
+            {
+                {'a', 0},
+                {'b', 0},
+            }
+        },
+    };
+    unordered_map<state, clazz> expectedAcceptingStates{{0, "id"}};
+    state expectedInitialState {0};
+    int expectedNumberOfStates {1};
+
+    // Assert
+    ASSERT_NE(dfaGen, nullptr);
+    EXPECT_EQ(dfaGen->getTransMap(), expectedDfaTransMap);
+    EXPECT_EQ(dfaGen->getAcceptingStates(), expectedAcceptingStates);
+    EXPECT_EQ(dfaGen->getInitialState(), expectedInitialState);
+    EXPECT_EQ(dfaGen->getNumberOfStates(), expectedNumberOfStates);
+    EXPECT_EQ(dfaGen->getLanguageSymbols(), symbols);
 }
 
 TEST(DFAGeneratorTests, moveNFACorrectly) {

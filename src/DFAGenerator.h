@@ -29,6 +29,7 @@ public:
     // Can be safely called on const DFAGenerator objects.
     unordered_map<state, unordered_map<symbol, state>> getTransMap() const;
     unordered_map<state, clazz> getAcceptingStates() const;
+    unordered_set<symbol> getLanguageSymbols() const;
     state getInitialState() const;
     int getNumberOfStates() const;
 
@@ -47,6 +48,7 @@ public:
 private:
     unordered_map<state, unordered_map<symbol, state>> transMap;
     unordered_map<state, clazz> acceptingStates;
+    unordered_set<symbol> languageSymbols;
     state initialState;
     int numberOfStates;
 
@@ -67,6 +69,8 @@ private:
     void minimizeDfa();
 
     statesPartition getInitialPartition();
+
+    void compactDfa();
 
 };
 
