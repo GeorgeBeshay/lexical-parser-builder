@@ -144,10 +144,10 @@ DFAGenerator::moveNfa(
 
 void
 DFAGenerator::minimizeDfa() {
+
     statesPartition currentPartition = getInitialPartition();
     statesPartition newPartition(currentPartition.size());      // the new partition size will always be >= parent partition size.
     while (true) {
-
         newPartition.clear();
 
         for (auto& grp: currentPartition) {
@@ -156,25 +156,53 @@ DFAGenerator::minimizeDfa() {
         }
 
         if (LexicalUtility::areEqualPartitions(currentPartition, newPartition)) {
-            break;
+            break;      // the final partition is currentPartition.
         } else {
             currentPartition = newPartition;
         }
     }
 
-    // the final partition is currentPartition.
-    // TODO
-    // create the representative states mapping
+    unordered_map<state, state> representativeStatesMapper;
+    unordered_set<state> representativeStates;      // will be the states of the new DFA.
+    unordered_map<state, clazz> newAcceptingStates;
+    unordered_map<state, unordered_map<symbol, state>> newTransMap;
 
-    // map the new starting state
+    for (auto& grp: currentPartition) {
+        if (grp.empty()) {
+            throw runtime_error("Partition groups should never be empty.");
+        }
 
-    // map the accepting states
+        state grpRepresentative = *(grp.begin());
+        representativeStates.insert(grpRepresentative);
+        for (auto& grpElement: grp) {
+            representativeStatesMapper[grpElement] = grpRepresentative;
+            if (this->acceptingStates.find(grpElement) != this->acceptingStates.end()) {
+                newAcceptingStates[grpRepresentative] = this->acceptingStates[grpElement];
+            }
+        }
+    }
 
-    // map the transitions from other states.
+    this->numberOfStates = (int)representativeStates.size();
+    this->initialState = representativeStatesMapper[this->initialState];
+    this->acceptingStates = std::move(newAcceptingStates);
+
+    // map the existing transMap to a new one based on the representative states.
+    for (auto& outerMapping: transMap) {
+        if (representativeStates.find(outerMapping.first) != representativeStates.end()) {
+            unordered_map<symbol, state> newInnerMapping;
+            for (auto& innerMapping: outerMapping.second) {
+                newInnerMapping[innerMapping.first] = representativeStatesMapper[innerMapping.second];
+            }
+            newTransMap[outerMapping.first] = newInnerMapping;
+        }
+    }
+
 }
 
 statesPartition
 DFAGenerator::getInitialPartition() {
+
+    // TODO: Should account for accepting classes separately in different groups.
 
     // the accepting states as the first group
     group acceptingStatesGrp;
