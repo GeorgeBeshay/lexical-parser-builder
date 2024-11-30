@@ -4,7 +4,10 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <utility>  // For std::pair
+#include <utility>
+#include <fstream>
+#include <sstream>
+#include <regex>
 
 using namespace std;
 
