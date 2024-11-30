@@ -2,8 +2,7 @@
 #include "NFA.h"
 
 int main() {
-    // Example file path for RegexScanner
-    string filePath = "../../inputs/LexicalRulesInput.txt";
+    string filePath = "../inputs/LexicalRulesInput.txt";
     RegexScanner regexScanner(filePath);
     regexScanner.printOutput();
 
