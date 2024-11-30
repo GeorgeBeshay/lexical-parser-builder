@@ -24,26 +24,18 @@ public:
             const unordered_set<symbol>& symbols
             );
 
-    // getters
-    // marked with 'const' to indicate that this method should not modify any of the object fields.
-    // Can be safely called on const DFAGenerator objects.
+    statesPartition getInitialPartition();
+
+    /*
+     * getters
+     * marked with 'const' to indicate that this method should not modify any of the object fields.
+     * Can be safely called on const DFAGenerator objects.
+     */
     unordered_map<state, unordered_map<symbol, state>> getTransMap() const;
     unordered_map<state, clazz> getAcceptingStates() const;
     unordered_set<symbol> getLanguageSymbols() const;
     state getInitialState() const;
     int getNumberOfStates() const;
-
-    // originalStates -> e-closure(originalStates). All states reachable on any epsilon-transition on any state s in originalStates.
-    static unordered_set<state> computeEpsilonClosure(
-        const unordered_set<state>& originalStates,
-        const unordered_map<state, unordered_set<state>>& nfaEpsilonTransMap
-    );
-
-    static unordered_set<state> moveNfa(
-        const set<state>& T,
-        symbol a,
-        const unordered_map<state, unordered_map<symbol, unordered_set<state>>>& nfaTransMap
-    );
 
 private:
     unordered_map<state, unordered_map<symbol, state>> transMap;
@@ -67,8 +59,6 @@ private:
             );
 
     void minimizeDfa();
-
-    statesPartition getInitialPartition();
 
     void compactDfa();
 

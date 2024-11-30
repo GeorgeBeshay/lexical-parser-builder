@@ -72,4 +72,57 @@ namespace LexicalUtility {
         return childPartition;
     }
 
+    unordered_set<state> computeEpsilonClosure(
+        const unordered_set<state> &originalStates,
+        const unordered_map<state, unordered_set<state>> &nfaEpsilonTransMap
+    ) {
+        unordered_set<state> epsilonClosure;
+        stack<state> remainingStates;
+
+        // pushing all states into the stack.
+        for (auto t: originalStates) {
+            remainingStates.push(t);
+            epsilonClosure.insert(t);
+        }
+
+        while (!remainingStates.empty()) {
+            state tempState = remainingStates.top();
+            remainingStates.pop();
+
+            if (nfaEpsilonTransMap.find(tempState) == nfaEpsilonTransMap.end()) {
+                continue;
+            }
+
+            // for all states u reachable by an epsilon transition from tempState.
+            for (auto u: nfaEpsilonTransMap.at(tempState)) {
+                if (epsilonClosure.count(u) == 0) {
+                    epsilonClosure.insert(u);
+                    remainingStates.push(u);
+                }
+            }
+        }
+
+        return epsilonClosure;
+    }
+
+    unordered_set<state> makeNfaTransition(
+        const set<state> &sourceStates,
+        symbol symbol_,
+        const unordered_map<state, unordered_map<symbol, unordered_set<state>>> &nfaTransMap
+    ) {
+        unordered_set<state> destinations;
+        for (auto t: sourceStates) {
+            if (
+                nfaTransMap.find(t) == nfaTransMap.end() ||
+                    nfaTransMap.at(t).find(symbol_) == nfaTransMap.at(t).end()
+                ) {
+                continue;
+            }
+            unordered_set<state> tempDestinations = nfaTransMap.at(t).at(symbol_);
+            destinations.insert(tempDestinations.begin(), tempDestinations.end());
+        }
+
+        return destinations;
+    }
+
 }

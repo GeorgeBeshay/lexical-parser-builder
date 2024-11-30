@@ -263,7 +263,7 @@ TEST(DFAGeneratorTests, moveNFACorrectly) {
 
 
     // Act
-    unordered_set<state> destinationStates = DFAGenerator::moveNfa(srcStates, s, nfaTransMap);
+    unordered_set<state> destinationStates = LexicalUtility::makeNfaTransition(srcStates, s, nfaTransMap);
 
     // expected data
     unordered_set<state> expectedDestinationStates {
@@ -302,7 +302,7 @@ TEST(DFAGeneratorTests, computeEpsilonClosureCorrectly) {
     };
 
     // Act
-    unordered_set<state> destinationStates = DFAGenerator::computeEpsilonClosure(originalStates, nfaEpsilonTransMap);
+    unordered_set<state> destinationStates = LexicalUtility::computeEpsilonClosure(originalStates, nfaEpsilonTransMap);
 
     // expected
     unordered_set<state> expectedDestinationStates{
@@ -311,4 +311,179 @@ TEST(DFAGeneratorTests, computeEpsilonClosureCorrectly) {
 
     // Assert
     ASSERT_EQ(expectedDestinationStates, destinationStates);
+}
+
+TEST(DFAGeneratorTests, computeMinimizeDfaCorrectly) {
+    // Arrange
+    unordered_map<state, unordered_map<symbol, unordered_set<state>>> nfaTransMap;
+    unordered_map<state, unordered_set<state>> nfaEpsilonTransMap;
+    unordered_map<state, clazz> nfaAcceptingStates;
+    unordered_set<state> nfaInitialStates;
+    unordered_set<symbol> symbols;
+    DFAGenerator* dfaGen = nullptr;
+
+    nfaAcceptingStates = {
+        {2, "id"},
+        {4, "id"},
+        {1, "id"}
+    };
+    nfaInitialStates = {0};
+    symbols = {'a', 'b',};
+    nfaEpsilonTransMap = {};
+    nfaTransMap = {
+        {
+            0,
+            {
+                {'a', {3}},
+                {'b', {1}},
+            }
+        },
+        {
+            1,
+            {
+                {'a', {2}},
+                {'b', {5}},
+            }
+        },
+        {
+            2,
+            {
+                {'a', {2}},
+                {'b', {5}},
+            }
+        },
+        {
+            3,
+            {
+                {'a', {0}},
+                {'b', {4}}
+            }
+        },
+        {
+            4,
+            {
+                {'a', {2}},
+                {'b', {5}}
+            }
+        },
+        {
+            5,
+            {
+                {'a', {5}},
+                {'b', {5}}
+            }
+        },
+    };
+
+    // Expected
+    unordered_map<state, unordered_map<symbol, state>> expectedDfaTransMap {
+        {
+            0,
+            {
+                {'a', 0},
+                {'b', 2}
+            }
+        },
+        {
+            2,
+            {
+                {'a', 2},
+                {'b', 1}
+            }
+        },
+        {
+            1,
+            {
+                {'a', 1},
+                {'b', 1}
+            }
+        }
+    };
+    state expectedInitialState = 0;
+    unordered_map<state, clazz> expectedAcceptingStates = {{2, "id"}};
+    int expectedMinimizedDfaStatesCount = 3;
+
+    // Act
+    dfaGen = new DFAGenerator(nfaTransMap, nfaEpsilonTransMap, nfaAcceptingStates, nfaInitialStates, symbols);
+
+    // Assert
+    ASSERT_EQ(dfaGen->getTransMap(), expectedDfaTransMap);
+    ASSERT_EQ(dfaGen->getAcceptingStates(), expectedAcceptingStates);
+    ASSERT_EQ(dfaGen->getLanguageSymbols(), symbols);
+    ASSERT_EQ(dfaGen->getInitialState(), expectedInitialState);
+    ASSERT_EQ(dfaGen->getNumberOfStates(), expectedMinimizedDfaStatesCount);
+}
+
+// last example in this article: https://www.gatevidyalay.com/converting-nfa-to-dfa-solved-examples/
+TEST(DFAGeneratorTests, computeConvertVeryComplexNfaToDfaCorrectly) {
+    // Arrange
+    unordered_map<state, unordered_map<symbol, unordered_set<state>>> nfaTransMap;
+    unordered_map<state, unordered_set<state>> nfaEpsilonTransMap;
+    unordered_map<state, clazz> nfaAcceptingStates;
+    unordered_set<state> nfaInitialStates;
+    unordered_set<symbol> symbols;
+    DFAGenerator* dfaGen = nullptr;
+
+    nfaAcceptingStates = {
+        {1, "else"},
+    };
+    nfaInitialStates = {0};
+    symbols = {'a', 'b',};
+    nfaEpsilonTransMap = {};
+    nfaTransMap = {
+        {
+            0,
+            {
+                {'a', {1, 2}},
+            }
+        },
+        {
+            1,
+            {}
+        },
+        {
+            2,
+            {
+                {'a', {2, 1}},
+                {'b', {2}},
+            }
+        },
+    };
+
+    // Expected
+    unordered_map<state, unordered_map<symbol, state>> expectedDfaTransMap {
+        {
+            0,
+            {
+                {'a', 1},
+            }
+        },
+        {
+            1,
+            {
+                {'a', 1},
+                {'b', 2}
+            }
+        },
+        {
+            2,
+            {
+                {'a', 1},
+                {'b', 2}
+            }
+        },
+    };
+    state expectedInitialState = 0;
+    unordered_map<state, clazz> expectedAcceptingStates = {{1, "else"}};
+    int expectedMinimizedDfaStatesCount = 3;
+
+    // Act
+    dfaGen = new DFAGenerator(nfaTransMap, nfaEpsilonTransMap, nfaAcceptingStates, nfaInitialStates, symbols);
+
+    // Assert
+    ASSERT_EQ(dfaGen->getTransMap(), expectedDfaTransMap);
+    ASSERT_EQ(dfaGen->getAcceptingStates(), expectedAcceptingStates);
+    ASSERT_EQ(dfaGen->getLanguageSymbols(), symbols);
+    ASSERT_EQ(dfaGen->getInitialState(), expectedInitialState);
+    ASSERT_EQ(dfaGen->getNumberOfStates(), expectedMinimizedDfaStatesCount);
 }
