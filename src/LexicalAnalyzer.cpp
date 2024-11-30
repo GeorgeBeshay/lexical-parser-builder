@@ -59,12 +59,13 @@ pair<LexicalAnalyzer::clazz, LexicalAnalyzer::lexem> LexicalAnalyzer::getNextTok
 
             currentState = nextState;
             token += currentSymbol;
+            this->inputFilePointer.get(currentCharacter);
         }
         else {
             isError = true;
+            this->inputFilePointer.get(currentCharacter);
             break;
         }
-        this->inputFilePointer.get(currentCharacter);
     }
 
     if (this->inputFilePointer.eof()) {
