@@ -202,26 +202,23 @@ DFAGenerator::minimizeDfa() {
 statesPartition
 DFAGenerator::getInitialPartition() {
 
-    // TODO: Should account for accepting classes separately in different groups.
+    // the partition will be on the form: {G_accepting_c1, G_accepting_c2, ..., G_accepting_cN, G_rejecting}
+    size_t initialPartitionSize = (this->acceptingStates.size()) + 1;
+    statesPartition p(initialPartitionSize);
+    unordered_map<clazz, int> acceptingClassToPartitionGrpMapper;
 
-    // the accepting states as the first group
-    group acceptingStatesGrp;
-    for (auto& mapping: this->acceptingStates) {
-        acceptingStatesGrp.insert(mapping.first);
-    }
-
-    // the rejecting states are the second group
-    group rejectingStatesGrp;
     for (state i = 0; i < this->numberOfStates; i++) {
-        if (acceptingStatesGrp.find(i) != acceptingStatesGrp.cend()) {
-            rejectingStatesGrp.insert(i);
+        if (this->acceptingStates.find(i) != this->acceptingStates.cend()) {
+            // is accepting state
+            clazz acceptedClass = this->acceptingStates[i];
+            if (acceptingClassToPartitionGrpMapper.count(acceptedClass) == 0) {
+                acceptingClassToPartitionGrpMapper[acceptedClass] = (int) acceptingClassToPartitionGrpMapper.size();
+            }
+            p[acceptingClassToPartitionGrpMapper[acceptedClass]].insert(i);
+        } else {
+            p[initialPartitionSize - 1].insert(i);
         }
     }
-
-    statesPartition p {
-        acceptingStatesGrp,
-        rejectingStatesGrp
-    };
 
     return p;
 }
