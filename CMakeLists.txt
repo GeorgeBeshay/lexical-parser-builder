@@ -10,6 +10,7 @@ add_executable(
         src/RegexScanner.cpp
         src/DFAGenerator.cpp
         src/NFA.cpp
+        src/TransitionTableContainer.cpp
 )
 
 # Related to GoogleTest
@@ -29,6 +30,8 @@ add_executable(
         testing/DFAGeneratorTests.cpp
         src/DFAGenerator.cpp
         src/NFA.cpp
+        src/TransitionTableContainer.cpp
+        testing/TransitionTableContainerTests.cpp
 )
 target_link_libraries(
         lexical-parser-builder-testing
