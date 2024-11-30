@@ -8,15 +8,12 @@
 #include <sstream>
 #include <vector>
 #include "DFAGenerator.h"
+#include "types.h"
 
 using namespace std;
 
 class TransitionTableContainer {
 public:
-    // type aliases for better readability.
-    using state = DFAGenerator::state;
-    using symbol = DFAGenerator::symbol;
-    using clazz = DFAGenerator::clazz;
 
     TransitionTableContainer(string& filePath) {
         if(!readFile(filePath)) {
