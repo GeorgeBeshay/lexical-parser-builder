@@ -8,7 +8,7 @@ using clazz = TransitionTableContainer::clazz;
 
 TEST(TransitionTableContainerTests, ConvertingSimpleDFACorrectly) {
     // Arrange
-    unordered_set<symbol> symbols = {'a', 'b'};;
+    unordered_set<symbol> symbols = {'a', 'b'};
     unordered_map<state, unordered_map<symbol, state>>
             dfaTransMap = {
             {
@@ -31,6 +31,8 @@ TEST(TransitionTableContainerTests, ConvertingSimpleDFACorrectly) {
 
     // Assert
     EXPECT_EQ(expectedTransitionTable, ttContainer.getTransitionTable());
+    EXPECT_EQ(1, ttContainer.getSymbolToIndexMapper()['a']);
+    EXPECT_EQ(0, ttContainer.getSymbolToIndexMapper()['b']);
     EXPECT_EQ(true, ttContainer.writeFile(filePath));
 
     // Act
@@ -46,7 +48,7 @@ TEST(TransitionTableContainerTests, ConvertingSimpleDFACorrectly) {
 
 TEST(TransitionTableContainerTests, ConvertingComplexDFACorrectly) {
     // Arrange
-    unordered_set<symbol> symbols = {'a', 'b'};;
+    unordered_set<symbol> symbols = {'a', 'b'};
     unordered_map<state, unordered_map<symbol, state>>
             dfaTransMap = {
             {
@@ -103,6 +105,8 @@ TEST(TransitionTableContainerTests, ConvertingComplexDFACorrectly) {
 
     // Assert
     EXPECT_EQ(expectedTransitionTable, ttContainer.getTransitionTable());
+    EXPECT_EQ(1, ttContainer.getSymbolToIndexMapper()['a']);
+    EXPECT_EQ(0, ttContainer.getSymbolToIndexMapper()['b']);
     EXPECT_EQ(true, ttContainer.writeFile(filePath));
 
     // Act

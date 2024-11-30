@@ -18,15 +18,6 @@ public:
     using symbol = DFAGenerator::symbol;
     using clazz = DFAGenerator::clazz;
 
-    bool writeFile(string& filePath);
-
-    void createTransitionTable(
-            unordered_map<state, unordered_map<symbol, state>> transMap,
-            unordered_map<state, clazz> acceptingStates,
-            state initialState,
-            unordered_set<symbol> symbols
-            );
-
     TransitionTableContainer(string& filePath) {
         if(!readFile(filePath)) {
             throw runtime_error("There is a problem in reading the transition table file: " + filePath);
@@ -39,10 +30,9 @@ public:
             state initialState,
             int numberOfStates,
             unordered_set<symbol> symbols
-            ) : transitionTable(numberOfStates, vector<int>(symbols.size(), -1)) {
+            );
 
-        createTransitionTable(transMap, acceptingStates, initialState, symbols);
-    }
+    bool writeFile(string& filePath);
 
     vector<vector<int>>& getTransitionTable() { return transitionTable; }
 

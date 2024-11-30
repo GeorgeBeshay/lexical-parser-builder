@@ -1,11 +1,13 @@
 #include "TransitionTableContainer.h"
 
-void TransitionTableContainer::createTransitionTable(
+TransitionTableContainer::TransitionTableContainer(
         unordered_map<state, unordered_map<symbol, state>> transMap,
         unordered_map<state, clazz> acceptingStates,
         state initialState,
+        int numberOfStates,
         unordered_set<symbol> symbols
         ) {
+    this->transitionTable.resize(numberOfStates, vector<int>(symbols.size(), -1));
     this->acceptingStates = acceptingStates;
     this->initialState = initialState;
 
@@ -53,7 +55,9 @@ bool TransitionTableContainer::writeFile(string &filePath) {
         outFile << acceptingState.first << " " << acceptingState.second << endl;
     }
 
-    outFile << endl << initialState << endl;
+    outFile << endl;
+
+    outFile << initialState << endl;
 
     outFile.close();
     return true;
@@ -87,10 +91,10 @@ bool TransitionTableContainer::readFile(string &filePath) {
     while (getline(inFile, line)) {
         if (line.empty()) break;
         stringstream symbolStream(line);
-        char symbol;
+        symbol currentSymbol;
         int index;
-        symbolStream >> symbol >> index;
-        symbolToIndexMapper[symbol] = index;
+        symbolStream >> currentSymbol >> index;
+        symbolToIndexMapper[currentSymbol] = index;
     }
 
     while (getline(inFile, line)) {
