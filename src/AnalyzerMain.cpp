@@ -54,5 +54,8 @@ int main(int argc, char* argv[]) {
         outputFile << currentPair.first << " " << currentPair.second << endl;
         cout << currentPair.first << " " << currentPair.second << endl;
     }
+
+    outputFile.close();
+    symbolTableOutputFile.close();
     return 0;
 }
