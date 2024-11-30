@@ -12,6 +12,13 @@ add_executable(
         src/TransitionTableContainer.cpp
 )
 
+add_executable(
+        lexical-analyzer
+        src/AnalyzerMain.cpp
+        src/TransitionTableContainer.cpp
+        src/LexicalAnalyzer.cpp
+)
+
 # Related to GoogleTest
 include(FetchContent)
 FetchContent_Declare(
