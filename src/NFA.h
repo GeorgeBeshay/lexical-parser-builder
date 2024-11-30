@@ -1,6 +1,6 @@
 #ifndef SINGLEREGEXNFA_H
 #define SINGLEREGEXNFA_H
-
+#include "RegexScanner.h"
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
@@ -33,9 +33,6 @@ public:
     // Add epsilon transition
     void addEpsilonTransition(State from, State to);
 
-    // Print NFA for debugging
-    void printNFA();
-
     virtual void printGraphviz();
 };
 
@@ -64,11 +61,12 @@ public:
     CombinedNFA();
 
 public:
+
     // Function to combine multiple NFAs into one
+    CombinedNFA generateCombinedNFA(RegexScanner& regexScanner);
     CombinedNFA combineNFA(const vector<NFA>& nfas);
     void addInitialState(State state);
     void addSymbol(Symbol symbol);
-    void printCombinedNFA();
     void printGraphvizSummarized();
     void printGraphviz() override;
 };

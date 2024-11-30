@@ -54,78 +54,12 @@ CombinedNFA CombinedNFA::combineNFA(const vector<NFA> &nfas) {
     return combinedNFA;
 }
 
-void CombinedNFA::printCombinedNFA() {
-    cout << "Start State: " << startState << endl;
-    // print acceptation states and their classes
-    cout << "Accept States: ";
-    for (const auto& state : acceptStateClasses) {
-        cout << state.first << " ";
-        cout << "Class: " << state.second << endl;
-    }
-    cout << endl;
-
-    cout << "Transitions:" << endl;
-    for (const auto& [from, transMap] : transitions) {
-        for (const auto& [symbol, toStates] : transMap) {
-            for (int to : toStates) {
-                cout << "  " << from << " --" << symbol << "--> " << to << endl;
-            }
-        }
-    }
-
-    cout << "Epsilon Transitions:" << endl;
-    for (const auto& [from, toStates] : epsilonTransitions) {
-        for (int to : toStates) {
-            cout << "  " << from << " --ε--> " << to << endl;
-        }
-    }
-
-    // print Symbols
-    cout << "Symbols: ";
-    for (const auto& symbol : symbols) {
-        cout << symbol << " ";
-    }
-    cout << endl;
-
-
-}
-
-// Print NFA
-void NFA::printNFA() {
-    cout << "Start State: " << startState << endl;
-    cout << "Accept State: " << acceptState << endl;
-
-    // Print the corresponding class of the accept state
-    if (acceptStateClasses.find(acceptState) != acceptStateClasses.end()) {
-        cout << "Accept State Class: " << acceptStateClasses[acceptState] << endl;
-    } else {
-        cout << "Accept State Class: Not Assigned" << endl;
-    }
-
-    cout << "Transitions:" << endl;
-    for (const auto& [from, transMap] : transitions) {
-        for (const auto& [symbol, toStates] : transMap) {
-            for (int to : toStates) {
-                cout << "  " << from << " --" << symbol << "--> " << to << endl;
-            }
-        }
-    }
-
-    cout << "Epsilon Transitions:" << endl;
-    for (const auto& [from, toStates] : epsilonTransitions) {
-        for (int to : toStates) {
-            cout << "  " << from << " --ε--> " << to << endl;
-        }
-    }
-}
-
 // Helper to create a basic NFA for a single character
 static NFA createBasicNFA(char symbol) {
     int start = SingleNFA::stateCounter++;
     int accept = SingleNFA::stateCounter++;
     NFA nfa(start, accept);
     nfa.addTransition(start, symbol, accept);
-    cout << "Created basic NFA for symbol:" << symbol << endl;
     return nfa;
 }
 static NFA createBasicEpsilonNFA(){
@@ -133,14 +67,12 @@ static NFA createBasicEpsilonNFA(){
     int accept = SingleNFA::stateCounter++;
     NFA nfa(start, accept);
     nfa.addEpsilonTransition(start, accept);
-    cout << "Created basic NFA for epsilon" << endl;
     return nfa;
 }
 static NFA createRangeNFA(char start, char end) {
     int startState = SingleNFA::stateCounter++;
     int acceptState = SingleNFA::stateCounter++;
     NFA nfa(startState, acceptState);
-
     for (char ch = start; ch <= end; ++ch) {
         nfa.addTransition(startState, ch, acceptState);
     }
@@ -228,9 +160,9 @@ bool isOpeningBracket(char c) {
 bool isClosingBracket(char c) {
     return c == ')' || c == ']';
 }
-bool isConcatenationImpossible(char c1, char c2) {
+bool isConcatenationPossible(char c1, char c2) {
     return
-    (c1=='|' ||
+    !(c1=='|' ||
     c1=='\\' ||
     isOperator(c2)||
     (isClosingBracket(c1)&& isClosingBracket(c2))||
@@ -243,7 +175,7 @@ bool isConcatenationImpossible(char c1, char c2) {
 }
 
 
-string preprocessRegex(const string& regex) {
+string applyImplicitConcatenation(const string& regex) {
     string processedRegex = "";
     size_t n = regex.size();
 
@@ -252,8 +184,7 @@ string preprocessRegex(const string& regex) {
 
         if (i + 1 < n) {
             char currentChar = regex[i];
-            char nextChar = regex[i + 1];
-//            cout << "Current Char: " << currentChar << " Next Char: " << nextChar << endl;
+            char nextChar;
             if(currentChar =='['){
                 while (currentChar != ']') {
                     i++;
@@ -265,15 +196,12 @@ string preprocessRegex(const string& regex) {
                 nextChar = regex[i+1];
             } else continue;
 
-//            cout << "Current Char: " << currentChar << " Next Char: " << nextChar << endl;
-            // Insert implicit concatenation '.' in the following cases:
-            if (!isConcatenationImpossible(currentChar,nextChar)) {  // One or more repetitions followed by literal/group
-//                cout << "Inserting implicit concatenation" << endl;
+
+            if (isConcatenationPossible(currentChar, nextChar)) {
                 processedRegex += '&';  // Insert implicit concatenation
             }
         }
     }
-//    cout << "Processed Regex: " << processedRegex << endl;
     return processedRegex;
 }
 
@@ -284,7 +212,6 @@ string preprocessRegex(const string& regex) {
 
 NFA SingleNFA::regexToNFA(const string& regex, const Class& className, const vector<pair<string, string>>& regularDefinitions) {
     string modifiedRegex = regex;  // Preprocess the regex to insert '.'
-    cout << "Original Regex: " << modifiedRegex << endl;
 
     // Step 1: First pass - replace regular definitions with their patterns using word boundaries
     bool changesMade = true;
@@ -316,14 +243,11 @@ NFA SingleNFA::regexToNFA(const string& regex, const Class& className, const vec
         }
     }
 
-    cout << "Regex after replacing definitions and adding ranges: " << modifiedRegex << endl;
-    //remove spaces
+
     modifiedRegex.erase(remove(modifiedRegex.begin(), modifiedRegex.end(), ' '), modifiedRegex.end());
 
-    cout << "Regex after removing spaces: " << modifiedRegex << endl;
 
-    modifiedRegex = preprocessRegex(modifiedRegex);
-    cout << "Regex after preprocessing: " << modifiedRegex << endl;
+    modifiedRegex = applyImplicitConcatenation(modifiedRegex);
 
     stack<NFA> nfaStack;
     stack<char> operatorStack;
@@ -457,7 +381,26 @@ NFA SingleNFA::generateSinglePunctuationNFA(const string& punctuation) {
 
 }
 
+CombinedNFA CombinedNFA::generateCombinedNFA(RegexScanner &regexScanner)  {
+    vector<NFA> nfas;
 
+    // add keyword NFAs
+    for (const auto& keyword : regexScanner.getReservedKeywords()) {
+        nfas.push_back(SingleNFA::generateSingleKeywordNFA(keyword));
+    }
+    for (const auto& punctuation : regexScanner.getReservedPunctuations()) {
+        nfas.push_back(SingleNFA::generateSinglePunctuationNFA(punctuation));
+    }
+    for (const auto& [className, regex] : regexScanner.getRegularExpressions()) {
+        nfas.push_back(SingleNFA::generateSingleRegexNFA(regex, className, regexScanner.getRegularDefinitions()));
+    }
+
+    CombinedNFA combinedNFA ;
+    combinedNFA = combinedNFA.combineNFA(nfas);
+    combinedNFA.printGraphviz();
+    combinedNFA.printGraphvizSummarized();
+    return combinedNFA;
+}
 
 void NFA::printGraphviz() {
     cout << "digraph finite_state_machine {" << endl;
