@@ -9,6 +9,7 @@ add_executable(
         src/main.cpp
         src/RegexScanner.cpp
         src/DFAGenerator.cpp
+        src/NFA.cpp
         src/TransitionTableContainer.cpp
         src/types.h
         src/LexicalUtility.cpp
@@ -30,6 +31,7 @@ add_executable(
         lexical-parser-builder-testing
         testing/DFAGeneratorTests.cpp
         src/DFAGenerator.cpp
+        src/NFA.cpp
         src/TransitionTableContainer.cpp
         testing/TransitionTableContainerTests.cpp
         src/types.h
