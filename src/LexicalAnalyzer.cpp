@@ -62,8 +62,11 @@ pair<LexicalAnalyzer::clazz, LexicalAnalyzer::lexem> LexicalAnalyzer::getNextTok
             this->inputFilePointer.get(currentCharacter);
         }
         else {
-            isError = true;
-            this->inputFilePointer.get(currentCharacter);
+            if (token == "") {
+                isError = true;
+                this->inputFilePointer.get(currentCharacter);
+                token += currentCharacter;
+            }
             break;
         }
     }

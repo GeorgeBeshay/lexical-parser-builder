@@ -48,11 +48,14 @@ int main(int argc, char* argv[]) {
 
         if(currentPair.first == IDENTIFIER_CLASS) {
             symbolTable[currentPair.second] = "";
-            symbolTableOutputFile << currentPair.second << endl;
         }
 
         outputFile << currentPair.first << " " << currentPair.second << endl;
         cout << currentPair.first << " " << currentPair.second << endl;
+    }
+
+    for(auto& symbolRow: symbolTable) {
+        symbolTableOutputFile << symbolRow.first << endl;
     }
 
     outputFile.close();
