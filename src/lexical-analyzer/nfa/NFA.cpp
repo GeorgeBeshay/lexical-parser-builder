@@ -374,7 +374,7 @@ NFA SingleNFA::generateSinglePunctuationNFA(const string &punctuation) {
 
     if (punctuation[0] == '\\') {
         NFA nfa = createBasicNFA(punctuation[1]);
-        nfa.acceptStateClasses[nfa.acceptState] = punctuation;
+        nfa.acceptStateClasses[nfa.acceptState] = punctuation[1];
         return nfa;
     }
 

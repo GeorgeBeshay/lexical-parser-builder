@@ -8,11 +8,11 @@ id pass
 id mnt
 ; ;
 while while
-\( (
+( (
 id pass
 relop !=
 num 10
-\) )
+) )
 { {
 id pass
 assign =
