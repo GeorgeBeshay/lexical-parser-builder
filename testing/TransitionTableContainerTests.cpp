@@ -2,10 +2,6 @@
 #include <cstdio>
 #include "../src/TransitionTableContainer.h"
 
-using state = TransitionTableContainer::state;
-using symbol = TransitionTableContainer::symbol;
-using clazz = TransitionTableContainer::clazz;
-
 TEST(TransitionTableContainerTests, ConvertingSimpleDFACorrectly) {
     // Arrange
     unordered_set<symbol> symbols = {'a', 'b'};

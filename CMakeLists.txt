@@ -11,6 +11,8 @@ add_executable(
         src/DFAGenerator.cpp
         src/NFA.cpp
         src/TransitionTableContainer.cpp
+        src/types.h
+        src/LexicalUtility.cpp
 )
 
 # Related to GoogleTest
@@ -32,6 +34,8 @@ add_executable(
         src/NFA.cpp
         src/TransitionTableContainer.cpp
         testing/TransitionTableContainerTests.cpp
+        src/types.h
+        src/LexicalUtility.cpp
 )
 target_link_libraries(
         lexical-parser-builder-testing
