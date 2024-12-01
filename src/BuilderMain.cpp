@@ -1,7 +1,7 @@
-#include "RegexScanner.h"
-#include "NFA.h"
-#include "DFAGenerator.h"
-#include "TransitionTableContainer.h"
+#include "lexical-analyzer/utilities/RegexScanner.h"
+#include "lexical-analyzer/nfa/NFA.h"
+#include "lexical-analyzer/dfa/DFAGenerator.h"
+#include "lexical-analyzer/utilities/TransitionTableContainer.h"
 
 int main(int argc, char* argv[]) {
     if (argc < 2) {

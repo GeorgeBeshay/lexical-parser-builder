@@ -7,7 +7,7 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
-#include "DFAGenerator.h"
+#include "../dfa/DFAGenerator.h"
 #include "types.h"
 
 using namespace std;

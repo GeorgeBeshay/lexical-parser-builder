@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <cstdio>
-#include "../src/TransitionTableContainer.h"
+#include "../src/lexical-analyzer/utilities/TransitionTableContainer.h"
 
 TEST(TransitionTableContainerTests, ConvertingSimpleDFACorrectly) {
     // Arrange

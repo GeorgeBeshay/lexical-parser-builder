@@ -7,7 +7,7 @@ TransitionTableContainer::TransitionTableContainer(
         int numberOfStates,
         unordered_set<symbol> symbols
         ) {
-    this->transitionTable.resize(numberOfStates, vector<int>(symbols.size(), -1));
+    this->transitionTable.resize(numberOfStates, vector<int>(symbols.size(), REJECTING_STATE));
     this->acceptingStates = acceptingStates;
     this->initialState = initialState;
 

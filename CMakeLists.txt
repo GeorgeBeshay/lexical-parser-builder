@@ -7,19 +7,19 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_executable(
         lexical-parser-builder
         src/BuilderMain.cpp
-        src/RegexScanner.cpp
-        src/DFAGenerator.cpp
-        src/NFA.cpp
-        src/TransitionTableContainer.cpp
-        src/types.h
-        src/LexicalUtility.cpp
+        src/lexical-analyzer/utilities/RegexScanner.cpp
+        src/lexical-analyzer/dfa/DFAGenerator.cpp
+        src/lexical-analyzer/nfa/NFA.cpp
+        src/lexical-analyzer/utilities/TransitionTableContainer.cpp
+        src/lexical-analyzer/utilities/types.h
+        src/lexical-analyzer/utilities/LexicalUtility.cpp
 )
 
 add_executable(
         lexical-analyzer
         src/AnalyzerMain.cpp
-        src/TransitionTableContainer.cpp
-        src/LexicalAnalyzer.cpp
+        src/lexical-analyzer/utilities/TransitionTableContainer.cpp
+        src/lexical-analyzer/LexicalAnalyzer.cpp
 )
 
 # Related to GoogleTest
@@ -37,12 +37,12 @@ enable_testing()
 add_executable(
         lexical-parser-builder-testing
         testing/DFAGeneratorTests.cpp
-        src/DFAGenerator.cpp
-        src/NFA.cpp
-        src/TransitionTableContainer.cpp
+        src/lexical-analyzer/dfa/DFAGenerator.cpp
+        src/lexical-analyzer/nfa/NFA.cpp
+        src/lexical-analyzer/utilities/TransitionTableContainer.cpp
         testing/TransitionTableContainerTests.cpp
-        src/types.h
-        src/LexicalUtility.cpp
+        src/lexical-analyzer/utilities/types.h
+        src/lexical-analyzer/utilities/LexicalUtility.cpp
 )
 target_link_libraries(
         lexical-parser-builder-testing

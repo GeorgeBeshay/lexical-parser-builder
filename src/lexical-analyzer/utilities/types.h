@@ -15,5 +15,6 @@ using symbol = char;
 using clazz = string;
 using group = unordered_set<state>;
 using statesPartition = vector<group>;
+using lexem = string;
 
 #endif //LEXICAL_PARSER_BUILDER_TYPES_H

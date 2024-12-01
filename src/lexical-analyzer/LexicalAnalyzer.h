@@ -8,16 +8,13 @@
 #include <cctype>
 #include <utility>
 
-#include "DFAGenerator.h"
+#include "dfa/DFAGenerator.h"
+#include "utilities/types.h"
 
 using namespace std;
 
 class LexicalAnalyzer {
 public:
-    using state = DFAGenerator::state;
-    using symbol = DFAGenerator::symbol;
-    using clazz = DFAGenerator::clazz;
-    using lexem = string;
 
     LexicalAnalyzer(vector<vector<int>>& transitionTable,
                     unordered_map<symbol, int>& symbolToIndexMapper,

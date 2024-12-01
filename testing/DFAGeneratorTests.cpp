@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../src/DFAGenerator.h"
+#include "../src/dfa/DFAGenerator.h"
 
 TEST(DFAGeneratorTests, ConvertingSimpleNFACorrectly) {
     // Arrange

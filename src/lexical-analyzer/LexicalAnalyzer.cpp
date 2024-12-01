@@ -1,7 +1,6 @@
 #include "LexicalAnalyzer.h"
 
 #define ERROR_MESSAGE "Error: No match for this token"
-#define REJECTED_STATE -1
 
 LexicalAnalyzer::LexicalAnalyzer(vector<vector<int>>& transitionTable,
                                  unordered_map<symbol, int>& symbolToIndexMapper,
@@ -18,7 +17,7 @@ LexicalAnalyzer::LexicalAnalyzer(vector<vector<int>>& transitionTable,
     }
 }
 
-pair<LexicalAnalyzer::clazz, LexicalAnalyzer::lexem> LexicalAnalyzer::getNextToken() {
+pair<clazz, lexem> LexicalAnalyzer::getNextToken() {
     if(!isNextTokenAvailable()) {
         return {};
     }
@@ -53,7 +52,7 @@ pair<LexicalAnalyzer::clazz, LexicalAnalyzer::lexem> LexicalAnalyzer::getNextTok
             currentSymbol = currentCharacter;
             nextState = this->transitionTable[currentState][this->symbolToIndexMapper[currentSymbol]];
 
-            if (nextState == REJECTED_STATE) {
+            if (nextState == REJECTING_STATE) {
                 break;
             }
 
@@ -90,7 +89,7 @@ pair<LexicalAnalyzer::clazz, LexicalAnalyzer::lexem> LexicalAnalyzer::getNextTok
     return {className, token};
 }
 
-void LexicalAnalyzer::printErrorMessage(LexicalAnalyzer::lexem nonIdentifiedToken) {
+void LexicalAnalyzer::printErrorMessage(lexem nonIdentifiedToken) {
     cout << ERROR_MESSAGE << ": " << nonIdentifiedToken;
 }
 
@@ -98,7 +97,7 @@ bool LexicalAnalyzer::isNextTokenAvailable() {
     return this->inputFilePointer.good();
 }
 
-LexicalAnalyzer::clazz LexicalAnalyzer::checkCurrentState(LexicalAnalyzer::state currentState) {
+clazz LexicalAnalyzer::checkCurrentState(state currentState) {
     if (this->acceptingStates.count(currentState) != 0) {
         return this->acceptingStates[currentState];
     }

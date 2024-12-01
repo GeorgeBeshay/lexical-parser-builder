@@ -1,8 +1,8 @@
 #include <iostream>
 #include <unordered_map>
 
-#include "TransitionTableContainer.h"
-#include "LexicalAnalyzer.h"
+#include "lexical-analyzer/utilities/TransitionTableContainer.h"
+#include "lexical-analyzer/LexicalAnalyzer.h"
 
 #define IDENTIFIER_CLASS "id"
 
@@ -29,7 +29,7 @@ int main(int argc, char* argv[]) {
 
 
     // Symbol table to be used in the next phase
-    unordered_map<LexicalAnalyzer::lexem, string> symbolTable;
+    unordered_map<lexem, string> symbolTable;
 
     ofstream outputFile(outputFilePath);
     ofstream symbolTableOutputFile(symbolTableOutputFilePath);
@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
         throw runtime_error("Error in opening the output files for lexical analyzer!");
     }
 
-    pair<LexicalAnalyzer::clazz, LexicalAnalyzer::lexem> currentPair;
+    pair<clazz, lexem> currentPair;
 
     while(lexicalAnalyzer.isNextTokenAvailable()) {
         currentPair = lexicalAnalyzer.getNextToken();

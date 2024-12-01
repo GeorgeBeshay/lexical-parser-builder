@@ -1,8 +1,8 @@
 #ifndef SINGLEREGEXNFA_H
 #define SINGLEREGEXNFA_H
 
-#include "types.h"
-#include "RegexScanner.h"
+#include "../utilities/types.h"
+#include "../utilities/RegexScanner.h"
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
