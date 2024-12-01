@@ -50,7 +50,6 @@ void RegexScanner::interpretRule(std::string &line) {
     else {
         cerr << "This line does not match with anything: " << line << endl;
     }
-
 }
 
 void RegexScanner::printOutput() {

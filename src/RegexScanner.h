@@ -1,8 +1,13 @@
 #ifndef LEXICALPARSER_REGEXSCANNER_H
 #define LEXICALPARSER_REGEXSCANNER_H
 
-#include <bits/stdc++.h>
 #include <iostream>
+#include <vector>
+#include <string>
+#include <utility>
+#include <fstream>
+#include <sstream>
+#include <regex>
 
 using namespace std;
 
