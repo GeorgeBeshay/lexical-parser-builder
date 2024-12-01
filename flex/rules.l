@@ -18,7 +18,7 @@ mulop    (\*|\/)
 
 boolean|int|float         { printf("Keyword: %s\n", yytext); }
 if|else|while             { printf("Keyword: %s\n", yytext); }
-[;,()]                    { printf("Punctuation: %s\n", yytext); }
+[;,(){}]                  { printf("Punctuation: %s\n", yytext); }
 {id}                      { printf("Identifier: %s\n", yytext); }
 {num}                     { printf("Number: %s\n", yytext); }
 {relop}                   { printf("Relational Operator: %s\n", yytext); }
