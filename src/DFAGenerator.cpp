@@ -198,8 +198,13 @@ DFAGenerator::compactDfa() {
 
     state nextStateId = 1;
     for (auto& transition: transMap) {
-        if (newStateIds.count(transition.first) == 0) {
+        if (newStateIds.count(transition.first) == 0) {        // exploring states that have an outgoing transition.
             newStateIds[transition.first] = nextStateId++;
+        }
+        for (auto& innerTransition: transition.second) {
+            if (newStateIds.count(innerTransition.second) == 0) {   // exploring states that have an incoming transition.
+                newStateIds[innerTransition.second] = nextStateId++;
+            }
         }
     }
 
