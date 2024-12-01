@@ -8,6 +8,7 @@
 using namespace std;
 
 #define REJECTING_STATE (-1)
+#define IDENTIFIER_CLASS "id"
 
 // type aliases for better readability.
 using state = int;
@@ -15,5 +16,6 @@ using symbol = char;
 using clazz = string;
 using group = unordered_set<state>;
 using statesPartition = vector<group>;
+using lexem = string;
 
 #endif //LEXICAL_PARSER_BUILDER_TYPES_H

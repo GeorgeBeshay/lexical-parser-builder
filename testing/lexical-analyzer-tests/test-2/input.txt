@@ -1,0 +1,10 @@
+boolean boolean4;
+
+int sum%;
+
+if test#@ {
+    $okay
+}
+else {
+    no, ever1.2
+}
