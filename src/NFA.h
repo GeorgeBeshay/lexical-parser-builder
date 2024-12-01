@@ -1,6 +1,7 @@
 #ifndef SINGLEREGEXNFA_H
 #define SINGLEREGEXNFA_H
 
+#include "types.h"
 #include "RegexScanner.h"
 #include <unordered_map>
 #include <unordered_set>
@@ -12,30 +13,24 @@
 #include "set"
 #include <regex>
 
-using namespace std;
-
-// Type aliases for clarity
-using State = int;
-using Symbol = char;
-using Class = string;
 
 class NFA {
 public:
-    State startState;
-    State acceptState;
-    unordered_map<State, unordered_map<Symbol, unordered_set<State>>> transitions; // Regular transitions
-    unordered_map<State, unordered_set<State>> epsilonTransitions;
-    unordered_map<State, Class> acceptStateClasses; // Mapping of accept state to its class
+    state startState;
+    state acceptState;
+    unordered_map<state, unordered_map<symbol, unordered_set<state>>> transitions; // Regular transitions
+    unordered_map<state, unordered_set<state>> epsilonTransitions;
+    unordered_map<state, clazz> acceptStateClasses; // Mapping of accept state to its class
 
 
 
-    NFA(State start, State accept);
+    NFA(state start, state accept);
 
 
-    void addTransition(State from, Symbol symbol, State to);
+    void addTransition(state from, symbol symbol, state to);
 
 
-    void addEpsilonTransition(State from, State to);
+    void addEpsilonTransition(state from, state to);
 
     virtual void printGraphviz();
 };
@@ -46,7 +41,7 @@ public:
 
 public:
 
-    static NFA generateSingleRegexNFA(const string &regex, const Class &className,
+    static NFA generateSingleRegexNFA(const string &regex, const clazz &className,
                                       const vector<pair<string, string>> &regularDefinitions);
 
     static NFA generateSingleKeywordNFA(const string &keyword);
@@ -56,7 +51,7 @@ public:
 private:
 
     static NFA
-    regexToNFA(const string &regex, const Class &className, const vector<pair<string, string>> &regularDefinitions);
+    regexToNFA(const string &regex, const clazz &className, const vector<pair<string, string>> &regularDefinitions);
 
     static NFA handleUnion(const NFA &nfa1, const NFA &nfa2);
 
@@ -69,8 +64,8 @@ private:
 
 class CombinedNFA : public NFA {
 public:
-    unordered_set<State> initialStates;
-    unordered_set<Symbol> symbols;
+    unordered_set<state> initialStates;
+    unordered_set<symbol> symbols;
 
     // Constructor
     CombinedNFA();
@@ -81,9 +76,9 @@ public:
 
     CombinedNFA combineNFA(const vector<NFA> &nfas);
 
-    void addInitialState(State state);
+    void addInitialState(state state);
 
-    void addSymbol(Symbol symbol);
+    void addSymbol(symbol symbol);
 
     void printGraphvizSummarized();
 

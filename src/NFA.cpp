@@ -212,7 +212,7 @@ string applyImplicitConcatenation(const string &regex) {
     return processedRegex;
 }
 
-NFA SingleNFA::regexToNFA(const string &regex, const Class &className,
+NFA SingleNFA::regexToNFA(const string &regex, const clazz &className,
                           const vector<pair<string, string>> &regularDefinitions) {
     string modifiedRegex = regex;
 
@@ -359,7 +359,7 @@ NFA SingleNFA::regexToNFA(const string &regex, const Class &className,
 
 
 // Generate NFA for a single regex with class name
-NFA SingleNFA::generateSingleRegexNFA(const string &regex, const Class &className,
+NFA SingleNFA::generateSingleRegexNFA(const string &regex, const clazz &className,
                                       const vector<pair<string, string>> &regularDefinitions) {
     return regexToNFA(regex, className, regularDefinitions); // Pass class to regexToNFA
 }

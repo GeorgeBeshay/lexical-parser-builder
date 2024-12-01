@@ -10,11 +10,11 @@ int main() {
     combinedNFA = combinedNFA.generateCombinedNFA(regexScanner);
 
     // CombinedNFA attributes
-//    unordered_map<State, unordered_map<Symbol, unordered_set<State>>> transitions;
-//    unordered_map<State, unordered_set<State>> epsilonTransitions;
-//    unordered_map<State, Class> acceptStateClasses;
-//    unordered_set<State> initialStates;
-//    unordered_set<Symbol> symbols;
+//    unordered_map<state, unordered_map<symbol, unordered_set<state>>> transitions;
+//    unordered_map<state, unordered_set<state>> epsilonTransitions;
+//    unordered_map<state, clazz> acceptStateClasses;
+//    unordered_set<state> initialStates;
+//    unordered_set<symbol> symbols;
 
 
     return 0;
