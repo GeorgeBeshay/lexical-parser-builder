@@ -1,0 +1,23 @@
+boolean boolean
+id boolean4
+; ;
+int int
+id sum
+Error: No match for this token %
+; ;
+if if
+id test
+Error: No match for this token #
+Error: No match for this token @
+{ {
+Error: No match for this token $
+id okay
+} }
+else else
+{ {
+id no
+, ,
+id ever1
+Error: No match for this token .
+num 2
+} }

@@ -53,6 +53,11 @@ pair<clazz, lexem> LexicalAnalyzer::getNextToken() {
             nextState = this->transitionTable[currentState][this->symbolToIndexMapper[currentSymbol]];
 
             if (nextState == REJECTING_STATE) {
+                if (token == "") {
+                    isError = true;
+                    this->inputFilePointer.get(currentCharacter);
+                    token += currentCharacter;
+                }
                 break;
             }
 
@@ -90,7 +95,7 @@ pair<clazz, lexem> LexicalAnalyzer::getNextToken() {
 }
 
 void LexicalAnalyzer::printErrorMessage(lexem nonIdentifiedToken) {
-    cout << ERROR_MESSAGE << ": " << nonIdentifiedToken;
+    cout << ERROR_MESSAGE << ": " << nonIdentifiedToken << endl;
 }
 
 bool LexicalAnalyzer::isNextTokenAvailable() {

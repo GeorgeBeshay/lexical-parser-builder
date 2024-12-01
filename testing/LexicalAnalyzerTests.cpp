@@ -30,6 +30,27 @@ TEST(LexicalAnalyzerTest, simpleTestProgram) {
     EXPECT_EQ(true, areFilesEqual(symbolTableFilePath, expectedSymbolTableFilePath));
 }
 
+TEST(LexicalAnalyzerTest, simpleTestProgramWithSomeUnknownCharacters) {
+    // Arrange
+    string testName = "test-2/";
+    string transitionTableFilePath = TESTING_DIRECTORY + testName + "transitionTable.txt";
+    string inputFilePath = TESTING_DIRECTORY + testName + "input.txt";
+    string outputFilePath = TESTING_DIRECTORY + testName + "output.txt";
+    string symbolTableFilePath = TESTING_DIRECTORY + testName + "symbolTable.txt";
+    string expectedOutputFilePath = TESTING_DIRECTORY + testName + "expectedOutput.txt";
+    string expectedSymbolTableFilePath = TESTING_DIRECTORY + testName + "expectedSymbolTable.txt";
+
+    string command = EXECUTABLE_NAME + transitionTableFilePath + " " + inputFilePath +
+                     " " + outputFilePath + " " + symbolTableFilePath;
+
+    // Act
+    system(command.c_str());
+
+    // Assert
+    EXPECT_EQ(true, areFilesEqual(outputFilePath, expectedOutputFilePath));
+    EXPECT_EQ(true, areFilesEqual(symbolTableFilePath, expectedSymbolTableFilePath));
+}
+
 
 bool areFilesEqual(string file1, string file2) {
     ifstream file1Stream(file1);
