@@ -43,6 +43,7 @@ add_executable(
         testing/TransitionTableContainerTests.cpp
         src/lexical-analyzer/utilities/types.h
         src/lexical-analyzer/utilities/LexicalUtility.cpp
+        testing/LexicalAnalyzerTests.cpp
 )
 target_link_libraries(
         lexical-parser-builder-testing
