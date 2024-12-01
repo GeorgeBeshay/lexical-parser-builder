@@ -7,16 +7,14 @@
 #include <map>
 #include <stack>
 #include <iostream>
+#include "types.h"
+#include "LexicalUtility.h"
 
 using namespace std;
 
 class DFAGenerator {
 
 public:
-    // type aliases for better readability.
-    using state = int;
-    using symbol = char;
-    using clazz = string;
 
     DFAGenerator(
             const unordered_map<state, unordered_map<symbol, unordered_set<state>>>& nfaTransMap,
@@ -26,34 +24,23 @@ public:
             const unordered_set<symbol>& symbols
             );
 
-    // getters
-    // marked with 'const' to indicate that this method should not modify any of the object fields.
-    // Can be safely called on const DFAGenerator objects.
+    statesPartition getInitialPartition();
+
+    /*
+     * getters
+     * marked with 'const' to indicate that this method should not modify any of the object fields.
+     * Can be safely called on const DFAGenerator objects.
+     */
     unordered_map<state, unordered_map<symbol, state>> getTransMap() const;
     unordered_map<state, clazz> getAcceptingStates() const;
+    unordered_set<symbol> getLanguageSymbols() const;
     state getInitialState() const;
     int getNumberOfStates() const;
-
-    // originalStates -> e-closure(originalStates). All states reachable on any epsilon-transition on any state s in originalStates.
-    static unordered_set<state> computeEpsilonClosure(
-        const unordered_set<state>& originalStates,
-        const unordered_map<state, unordered_set<state>>& nfaEpsilonTransMap
-    );
-
-    static unordered_set<state> moveNfa(
-        const set<state>& T,
-        symbol a,
-        const unordered_map<state, unordered_map<symbol, unordered_set<state>>>& nfaTransMap
-    );
-
-    template <typename T>
-    static set<T> unorderedSetToOrderedSet(const unordered_set<T>& unorderedSet) {
-        return set<T>(unorderedSet.begin(), unorderedSet.end());
-    }
 
 private:
     unordered_map<state, unordered_map<symbol, state>> transMap;
     unordered_map<state, clazz> acceptingStates;
+    unordered_set<symbol> languageSymbols;
     state initialState;
     int numberOfStates;
 
@@ -67,9 +54,13 @@ private:
             );
 
     void computeAcceptingDfaStates(
-            const unordered_map<DFAGenerator::state, set<DFAGenerator::state>>& dfaToNfaMapper,
+            const unordered_map<state, set<state>>& dfaToNfaMapper,
             const unordered_map<state, clazz>& nfaAcceptingStates
             );
+
+    void minimizeDfa();
+
+    void compactDfa();
 
 };
 
