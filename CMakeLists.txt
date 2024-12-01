@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable(
         lexical-parser-builder
-        src/main.cpp
+        src/BuilderMain.cpp
         src/RegexScanner.cpp
         src/DFAGenerator.cpp
         src/TransitionTableContainer.cpp
