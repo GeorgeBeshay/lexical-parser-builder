@@ -381,13 +381,6 @@ TEST(DFAGeneratorTests, computeMinimizeDfaCorrectly) {
             0,
             {
                 {'a', 0},
-                {'b', 2}
-            }
-        },
-        {
-            2,
-            {
-                {'a', 2},
                 {'b', 1}
             }
         },
@@ -395,12 +388,19 @@ TEST(DFAGeneratorTests, computeMinimizeDfaCorrectly) {
             1,
             {
                 {'a', 1},
-                {'b', 1}
+                {'b', 2}
+            }
+        },
+        {
+            2,
+            {
+                {'a', 2},
+                {'b', 2}
             }
         }
     };
     state expectedInitialState = 0;
-    unordered_map<state, clazz> expectedAcceptingStates = {{2, "id"}};
+    unordered_map<state, clazz> expectedAcceptingStates = {{1, "id"}};
     int expectedMinimizedDfaStatesCount = 3;
 
     // Act
