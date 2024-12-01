@@ -400,8 +400,6 @@ CombinedNFA CombinedNFA::generateCombinedNFA(RegexScanner &regexScanner) {
 
     CombinedNFA combinedNFA;
     combinedNFA = combinedNFA.combineNFA(nfas);
-    combinedNFA.printGraphviz();
-    combinedNFA.printGraphvizSummarized();
     return combinedNFA;
 }
 
