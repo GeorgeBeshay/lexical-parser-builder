@@ -72,6 +72,13 @@ namespace LexicalUtility {
         return childPartition;
     }
 
+    /**
+     * Given the source states and the epsilon transitions of the current NFA, this method computes
+     * the destination states reached on epsilon transitions from the current source states.
+     * @param originalStates
+     * @param nfaEpsilonTransMap
+     * @return
+     */
     unordered_set<state> computeEpsilonClosure(
         const unordered_set<state> &originalStates,
         const unordered_map<state, unordered_set<state>> &nfaEpsilonTransMap
@@ -105,6 +112,14 @@ namespace LexicalUtility {
         return epsilonClosure;
     }
 
+    /**
+     * Given a set of source states and a trigger symbol, this method computes the corresponding
+     * destination states.
+     * @param sourceStates
+     * @param symbol_
+     * @param nfaTransMap
+     * @return
+     */
     unordered_set<state> makeNfaTransition(
         const set<state> &sourceStates,
         symbol symbol_,
@@ -123,6 +138,195 @@ namespace LexicalUtility {
         }
 
         return destinations;
+    }
+
+    /**
+     * Generates a .svg graph plot corresponding to the DFA (with no dead states).
+     * @param initialState
+     * @param symbols
+     * @param transMap
+     * @param acceptingStates
+     * @param numberOfStates
+     * @param imgFileNameWithExtension
+     * @return
+     */
+    bool visualizeDfa(
+        state initialState,
+        const unordered_set<symbol>& symbols,
+        const unordered_map<state, unordered_map<symbol, state>>& transMap,
+        const unordered_map<state, clazz>& acceptingStates,
+        const int& numberOfStates,
+        const string& imgFileNameWithExtension
+        ) {
+
+        const string tempDotFileName = "dfa_temp_plot.dot";
+
+        {
+            // in case the file was already there, remove it first.
+            remove(tempDotFileName.c_str());
+
+            // filling the .dot file.
+            ofstream dotFile(tempDotFileName);
+            if (!dotFile.is_open()) {
+                cerr << "Something had went wrong when opening the .dot file." << endl;
+                return false;
+            }
+
+            // Global properties
+            dotFile << "digraph DeterministicFiniteAutomaton {\n";
+            dotFile << "    beautify=true";
+            dotFile << "    rankdir=LR;\n"; // Left-to-right layout
+
+            // All states
+            dotFile << "    node [shape = circle];\n";
+            for (auto &outgoingTransitions: transMap) {
+                for (auto &outgoingTransition: outgoingTransitions.second) {
+                    dotFile << "    " << outgoingTransitions.first << " -> " << outgoingTransition.second
+                            << " [label=\"" << outgoingTransition.first << "\"];\n";
+                }
+            }
+
+            // Accepting states
+            for (auto& acceptingState: acceptingStates) {
+                dotFile << " " << acceptingState.first << " [shape=doublecircle, color=green, style=filled];\n";
+            }
+
+            // Non-accepting states
+            for (state s=0; s < numberOfStates; s++) {
+                if (acceptingStates.count(s) != 0) {
+                    continue;
+                }
+                dotFile << " " << s << " [shape=circle, color=purple, style=filled];\n";
+            }
+
+            // Initial state
+            dotFile << "    " << initialState << " [color=red, style=filled];\n";
+            dotFile << "    start [shape=none, label=\"\"];\n";
+            dotFile << "    start -> " << initialState << ";\n";
+
+            dotFile << "}\n";
+            dotFile.close();
+        }
+
+        {
+            string command = "dot -Tsvg " + tempDotFileName + " -o " + imgFileNameWithExtension;
+            if (system(command.c_str()) != 0) {
+                cerr << "Graphviz failed to generate the image." << endl;
+                return false;
+            }
+        }
+
+        {
+            // delete the temp .dot file created.
+            if (remove(tempDotFileName.c_str()) != 0) {
+                cerr << "Failed to delete temporary DOT file." << endl;
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Generates a .svg graph plot corresponding to the NFA.
+     * @param initialStates
+     * @param symbols
+     * @param transMap
+     * @param epsilonTransitions
+     * @param acceptingStates
+     * @param numberOfStates
+     * @param imgFileNameWithExtension
+     * @return
+     */
+    bool visualizeNfa(
+        const unordered_set<state>& initialStates,
+        const unordered_set<symbol>& symbols,
+        const unordered_map<state, unordered_map<symbol, unordered_set<state>>>& transMap,
+        const unordered_map<state, unordered_set<state>>& epsilonTransitions,
+        const unordered_map<state, clazz>& acceptingStates,
+        const int& numberOfStates,
+        const string& imgFileNameWithExtension
+    ) {
+
+        const string tempDotFileName = "nfa_temp_plot.dot";
+
+        {
+            // in case the file was already there, remove it first.
+            remove(tempDotFileName.c_str());
+
+            // filling the .dot file.
+            ofstream dotFile(tempDotFileName);
+            if (!dotFile.is_open()) {
+                cerr << "Something had went wrong when opening the .dot file." << endl;
+                return false;
+            }
+
+            // Global properties
+            dotFile << "digraph DeterministicFiniteAutomaton {\n";
+            dotFile << "    beautify=true";
+            dotFile << "    rankdir=LR;\n"; // Left-to-right layout
+
+            // All regular transitions
+            dotFile << "    node [shape = circle];\n";
+            for (auto &outgoingTransitions: transMap) {
+                for (auto &outgoingTransition: outgoingTransitions.second) {
+                    for (auto &destinationState: outgoingTransition.second) {
+                        dotFile << "    " << outgoingTransitions.first << " -> " << destinationState
+                                << " [label=\"" << outgoingTransition.first << "\"];\n";
+                    }
+                }
+            }
+
+            // Epsilon transitions (labeled as ε)
+            dotFile << "    node [shape = circle, color=lightgray];\n"; // Optional color for epsilon transitions
+            for (auto& epsilonTransition : epsilonTransitions) {
+                for (auto& destState : epsilonTransition.second) {
+                    dotFile << "    " << epsilonTransition.first << " -> " << destState
+                            << " [label=\"ε\", color=blue];\n"; // ε transition in blue or any color you prefer
+                }
+            }
+
+            // Accepting states
+            for (auto& acceptingState: acceptingStates) {
+                dotFile << " " << acceptingState.first << " [shape=doublecircle, color=green, style=filled];\n";
+            }
+
+            // Non-accepting states
+            for (state s=0; s < numberOfStates; s++) {
+                if (acceptingStates.count(s) != 0) {
+                    continue;
+                }
+                dotFile << " " << s << " [shape=circle, color=purple, style=filled];\n";
+            }
+
+            // Initial state
+            for (auto& tempInitState: initialStates) {
+                dotFile << "    " << tempInitState << " [color=red, style=filled];\n";
+                dotFile << "    start [shape=none, label=\"\"];\n";
+                dotFile << "    start -> " << tempInitState << ";\n";
+            }
+
+            dotFile << "}\n";
+            dotFile.close();
+        }
+
+        {
+            string command = "dot -Tsvg " + tempDotFileName + " -o " + imgFileNameWithExtension;
+            if (system(command.c_str()) != 0) {
+                cerr << "Graphviz failed to generate the image." << endl;
+                return false;
+            }
+        }
+
+        {
+            // delete the temp .dot file created.
+            if (remove(tempDotFileName.c_str()) != 0) {
+                cerr << "Failed to delete temporary DOT file." << endl;
+                return false;
+            }
+        }
+
+        return true;
     }
 
 }
