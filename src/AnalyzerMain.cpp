@@ -3,8 +3,7 @@
 
 #include "lexical-analyzer/utilities/TransitionTableContainer.h"
 #include "lexical-analyzer/LexicalAnalyzer.h"
-
-#define IDENTIFIER_CLASS "id"
+#include "lexical-analyzer/utilities/types.h"
 
 using namespace std;
 

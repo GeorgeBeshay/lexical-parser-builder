@@ -8,6 +8,7 @@
 using namespace std;
 
 #define REJECTING_STATE (-1)
+#define IDENTIFIER_CLASS "id"
 
 // type aliases for better readability.
 using state = int;

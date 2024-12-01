@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../src/dfa/DFAGenerator.h"
+#include "../src/lexical-analyzer/dfa/DFAGenerator.h"
 
 TEST(DFAGeneratorTests, ConvertingSimpleNFACorrectly) {
     // Arrange
