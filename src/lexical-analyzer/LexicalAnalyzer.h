@@ -31,9 +31,10 @@ private:
     unordered_map<state, clazz> acceptingStates;
     state initialState;
     ifstream inputFilePointer;
+    string remainingCharacters;
 
-    void printErrorMessage(lexem nonIdentifiedToken);
-    clazz checkCurrentState(state currentState);
+    void printErrorMessage(lexem token);
+    pair<clazz, lexem> checkCurrentState(lexem token, vector<int> currentTokenStates);
 };
 
 
