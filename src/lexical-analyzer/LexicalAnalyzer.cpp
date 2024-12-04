@@ -15,32 +15,42 @@ LexicalAnalyzer::LexicalAnalyzer(vector<vector<int>>& transitionTable,
     if (!inputFilePointer.is_open()) {
         throw runtime_error("Failed to open input file: " + inputFilePath);
     }
+    this->remainingCharacters = "";
 }
 
 pair<clazz, lexem> LexicalAnalyzer::getNextToken() {
-    if(!isNextTokenAvailable()) {
+    if(!isNextTokenAvailable() && this->remainingCharacters.empty()) {
         return {};
     }
 
-    clazz className = "";
     lexem token = "";
-
     char currentCharacter;
     state currentState = this->initialState;
     state nextState;
-    symbol currentSymbol;
-    bool isError = false;
+    vector<state> currentTokenStates;
 
-    while(!this->inputFilePointer.eof()) {
-        currentCharacter = this->inputFilePointer.peek();
+    // Check if there are some remaining characters from the last time
+    for(int i = 0; i < this->remainingCharacters.size(); i++) {
+        currentCharacter = this->remainingCharacters[i];
+        token += currentCharacter;
 
-        if(this->inputFilePointer.eof()) {
-            break;
+        nextState = (this->symbolToIndexMapper.count(currentCharacter) != 0)?
+                    this->transitionTable[currentState][this->symbolToIndexMapper[currentCharacter]] :
+                    REJECTING_STATE;
+
+        currentTokenStates.push_back(nextState);
+
+        if(nextState == REJECTING_STATE) {
+            this->remainingCharacters = this->remainingCharacters.substr(token.size());
+            return checkCurrentState(token, currentTokenStates);
         }
+    }
+    this->remainingCharacters = "";
 
+    // Continue reading from the file one character at a time
+    while(this->inputFilePointer.get(currentCharacter)) {
         if(isspace(currentCharacter)) {
             if(token.empty()) {
-                this->inputFilePointer.get(currentCharacter);
                 continue;
             }
             else {
@@ -48,65 +58,46 @@ pair<clazz, lexem> LexicalAnalyzer::getNextToken() {
             }
         }
 
-        if(this->symbolToIndexMapper.count(currentCharacter) != 0) {
-            currentSymbol = currentCharacter;
-            nextState = this->transitionTable[currentState][this->symbolToIndexMapper[currentSymbol]];
+        token += currentCharacter;
 
-            if (nextState == REJECTING_STATE) {
-                if (token == "") {
-                    isError = true;
-                    this->inputFilePointer.get(currentCharacter);
-                    token += currentCharacter;
-                }
-                break;
-            }
+        nextState = (this->symbolToIndexMapper.count(currentCharacter) != 0) ?
+                    this->transitionTable[currentState][this->symbolToIndexMapper[currentCharacter]] :
+                    REJECTING_STATE;
 
-            currentState = nextState;
-            token += currentSymbol;
-            this->inputFilePointer.get(currentCharacter);
+        currentTokenStates.push_back(nextState);
+
+        if (nextState == REJECTING_STATE) {
+            return checkCurrentState(token, currentTokenStates);
         }
-        else {
-            if (token == "") {
-                isError = true;
-                this->inputFilePointer.get(currentCharacter);
-                token += currentCharacter;
-            }
-            break;
-        }
+
+        currentState = nextState;
     }
 
-    if (this->inputFilePointer.eof()) {
-        this->inputFilePointer.close();
-    }
-
-    if (token == "") {
-        return {};
-    }
-
-    if (isError) {
-        printErrorMessage(token);
-        className = ERROR_MESSAGE;
-    }
-    else {
-        className = checkCurrentState(currentState);
-    }
-
-    return {className, token};
+    return checkCurrentState(token, currentTokenStates);
 }
 
-void LexicalAnalyzer::printErrorMessage(lexem nonIdentifiedToken) {
-    cout << ERROR_MESSAGE << ": " << nonIdentifiedToken << endl;
+void LexicalAnalyzer::printErrorMessage(lexem token) {
+    cout << ERROR_MESSAGE << ": " << token << endl;
 }
 
 bool LexicalAnalyzer::isNextTokenAvailable() {
-    return this->inputFilePointer.good();
+    return this->inputFilePointer.good() || !this->remainingCharacters.empty();
 }
 
-clazz LexicalAnalyzer::checkCurrentState(state currentState) {
-    if (this->acceptingStates.count(currentState) != 0) {
-        return this->acceptingStates[currentState];
+pair<clazz, lexem> LexicalAnalyzer::checkCurrentState(lexem token, vector<int> currentTokenStates) {
+    if(currentTokenStates.empty()) {
+        return {};
     }
-    else {
-       return ERROR_MESSAGE;
+
+    for(int i = currentTokenStates.size() - 1; i >= 0; i--) {
+        if(this->acceptingStates.count(currentTokenStates[i]) != 0) {
+            lexem tmpToken = token.substr(0, i + 1);
+            this->remainingCharacters = token.substr(i + 1) + this->remainingCharacters;
+
+            return {this->acceptingStates[currentTokenStates[i]], tmpToken};
+        }
     }
+
+    printErrorMessage(token);
+    return {ERROR_MESSAGE, token};
 }
