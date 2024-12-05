@@ -38,6 +38,7 @@ pair<clazz, lexem> LexicalAnalyzer::getNextToken() {
                     this->transitionTable[currentState][this->symbolToIndexMapper[currentCharacter]] :
                     REJECTING_STATE;
 
+        currentState = nextState;
         currentTokenStates.push_back(nextState);
 
         if(nextState == REJECTING_STATE) {
