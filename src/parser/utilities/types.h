@@ -7,6 +7,8 @@
 
 #include "ParsingToken.h"
 
+#define EPSILON_STRING "\\L"
+
 using namespace std;
 
 // type aliases for better readability.

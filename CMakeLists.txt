@@ -46,6 +46,8 @@ add_executable(
         testing/LexicalAnalyzerTests.cpp
         src/parser/utilities/ParsingToken.cpp
         testing/ParsingTokenTests.cpp
+        src/parser/utilities/ParserUtility.cpp
+        testing/ParsingFirstFollowSetTests.cpp
 )
 target_link_libraries(
         lexical-parser-builder-testing
