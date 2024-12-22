@@ -98,3 +98,75 @@ TEST(ParsingFirstSetTests, exampleFromLecture) {
     EXPECT_EQ(1, firstSetsMap[nonTerminalF].count(openBracketTerminal));
     EXPECT_EQ(1, firstSetsMap[nonTerminalF].count(idTerminal));
 }
+
+TEST(ParsingFirstSetTests, moreComplicatedExample) {
+    // Prepare
+    ParsingToken nonTerminalE("E", false);
+    ParsingToken nonTerminalEDash("EDash", false);
+    ParsingToken nonTerminalT("T", false);
+    ParsingToken nonTerminalTDash("TDash", false);
+    ParsingToken nonTerminalF("F", false);
+    ParsingToken nonTerminalFDash("FDash", false);
+    ParsingToken nonTerminalP("P", false);
+    ParsingToken plusTerminal("+", true);
+    ParsingToken multiplyTerminal("*", true);
+    ParsingToken openBracketTerminal("(", true);
+    ParsingToken closeBracketTerminal(")", true);
+    ParsingToken aTerminal("a", true);
+    ParsingToken bTerminal("b", true);
+    ParsingToken epsTerminal(EPSILON_STRING, true);
+
+    t_prodRule prodRuleE({
+                                 {nonTerminalT, nonTerminalEDash}
+                         });
+
+    t_prodRule prodRuleEDash({
+                                     {plusTerminal, nonTerminalE},
+                                     {epsTerminal}
+                             });
+
+    t_prodRule prodRuleT({
+                                 {nonTerminalF, nonTerminalTDash}
+                         });
+
+    t_prodRule prodRuleTDash({
+                                     {epsTerminal}
+                             });
+
+    t_prodRule prodRuleF({
+                                 {nonTerminalP, nonTerminalFDash}
+                         });
+
+    t_prodRule prodRuleFDash ({
+        {multiplyTerminal, nonTerminalF},
+        {epsTerminal}
+    });
+
+    t_prodRule prodRuleP ({
+        {openBracketTerminal, nonTerminalE, closeBracketTerminal},
+        {aTerminal},
+        {bTerminal},
+        {epsTerminal}
+    });
+
+    t_grammar grammar;
+    grammar[nonTerminalE] = prodRuleE;
+    grammar[nonTerminalEDash] = prodRuleEDash;
+    grammar[nonTerminalT] = prodRuleT;
+    grammar[nonTerminalTDash] = prodRuleTDash;
+    grammar[nonTerminalF] = prodRuleF;
+    grammar[nonTerminalFDash] = prodRuleFDash;
+    grammar[nonTerminalP] = prodRuleP;
+
+    // Act
+    t_parsingTokenSetMap firstSetsMap = ParserUtility::computeFirstSets(grammar);
+
+    // Check
+    EXPECT_EQ(6, firstSetsMap[nonTerminalE].size());
+    EXPECT_EQ(2, firstSetsMap[nonTerminalEDash].size());
+    EXPECT_EQ(5, firstSetsMap[nonTerminalT].size());
+    EXPECT_EQ(1, firstSetsMap[nonTerminalTDash].size());
+    EXPECT_EQ(5, firstSetsMap[nonTerminalF].size());
+    EXPECT_EQ(2, firstSetsMap[nonTerminalFDash].size());
+    EXPECT_EQ(4, firstSetsMap[nonTerminalP].size());
+}
