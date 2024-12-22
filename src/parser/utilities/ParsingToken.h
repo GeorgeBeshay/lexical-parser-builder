@@ -26,16 +26,16 @@ public:
 };
 
 struct ParsingTokenHash {
-    std::size_t operator()(const ParsingToken& pt) const {
-        return std::hash<std::string>()(pt.token) ^
-               (std::hash<bool>()(pt.isTerminal) << 1) ^
-               (std::hash<bool>()(pt.isEpsilon) << 2);
+    size_t operator()(const ParsingToken& pt) const {
+        return hash<string>()(pt.token) ^
+               (hash<bool>()(pt.isTerminal) << 1) ^
+               (hash<bool>()(pt.isEpsilon) << 2);
     }
 };
 
 struct ParsingTokenVectorHash {
-    std::size_t operator()(const std::vector<ParsingToken>& vec) const {
-        std::size_t hash_value = 0;
+    size_t operator()(const vector<ParsingToken>& vec) const {
+        size_t hash_value = 0;
         for (const auto& token : vec) {
             hash_value ^= ParsingTokenHash{}(token) + 0x9e3779b9 + (hash_value << 6) + (hash_value >> 2);
         }
