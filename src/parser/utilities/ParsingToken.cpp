@@ -17,3 +17,9 @@ bool ParsingToken::getIsTerminal() {
 bool ParsingToken::getIsEpsilon() {
     return this->isEpsilon;
 }
+
+bool ParsingToken::operator==(const ParsingToken& other) const {
+    return token == other.token &&
+           isTerminal == other.isTerminal &&
+           isEpsilon == other.isEpsilon;
+}
