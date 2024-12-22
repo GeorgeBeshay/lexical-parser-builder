@@ -35,15 +35,15 @@ TEST(ParsingTokenTests, checkGrammarConstruction) {
     ParsingToken parsingToken("T", false);
     ParsingToken parsingToken2("if", true);
 
-    t_productionAlternative productionAlternative;
+    t_prodAlt productionAlternative;
     productionAlternative.push_back(parsingToken);
     productionAlternative.push_back(parsingToken2);
 
-    t_productionAlternative productionAlternative2;
+    t_prodAlt productionAlternative2;
     productionAlternative2.push_back(parsingToken);
     productionAlternative2.push_back(parsingToken2);
 
-    t_productionRule productionRule;
+    t_prodRule productionRule;
     productionRule.insert(productionAlternative);
     productionRule.insert(productionAlternative2);
 

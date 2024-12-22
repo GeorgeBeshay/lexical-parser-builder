@@ -5,21 +5,20 @@ ParsingToken::ParsingToken(string token, bool isTerminal) {
     this->isTerminal = isTerminal;
 }
 
-string ParsingToken::getToken() {
+string ParsingToken::getToken() const {
     return this->token;
 }
 
-bool ParsingToken::getIsTerminal() {
+bool ParsingToken::getIsTerminal() const {
     return this->isTerminal;
 }
 
-bool ParsingToken::getIsEpsilon() {
+bool ParsingToken::isEpsilon() const {
     return this->getIsTerminal() && this->getToken() == "\\L";
 }
 
 bool ParsingToken::operator==(const ParsingToken& other) const {
-    return token == other.token &&
-           isTerminal == other.isTerminal;
+    return token == other.getToken() && isTerminal == other.getIsTerminal();
 }
 
 bool ParsingToken::operator!=(const ParsingToken &other) const {

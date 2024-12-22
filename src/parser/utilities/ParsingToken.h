@@ -15,19 +15,18 @@ private:
 public:
     ParsingToken() = default;
     ParsingToken(string token, bool isTerminal);
-    string getToken();
-    bool getIsTerminal();
-    bool getIsEpsilon();
+    string getToken() const;
+    bool getIsTerminal() const;
+    bool isEpsilon() const;
 
     bool operator==(const ParsingToken& other) const;
     bool operator!=(const ParsingToken& other) const;
-    friend struct ParsingTokenHash; // To be able to access the private members of class
 };
 
 struct ParsingTokenHash {
     size_t operator()(const ParsingToken& pt) const {
-        return hash<string>()(pt.token) ^
-               (hash<bool>()(pt.isTerminal) << 1);
+        return hash<string>()(pt.getToken()) ^
+               (hash<bool>()(pt.getIsTerminal()) << 1);
     }
 };
 
