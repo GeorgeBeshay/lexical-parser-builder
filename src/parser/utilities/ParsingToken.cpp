@@ -23,3 +23,7 @@ bool ParsingToken::operator==(const ParsingToken& other) const {
            isTerminal == other.isTerminal &&
            isEpsilon == other.isEpsilon;
 }
+
+bool ParsingToken::operator!=(const ParsingToken &other) const {
+    return !(*this == other);
+}
