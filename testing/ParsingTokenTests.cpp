@@ -6,19 +6,19 @@
 
 using namespace std;
 
-TEST(ParsingTokenTest, checkEquality) {
-    ParsingToken parsingToken("E", false, false);
-    ParsingToken parsingToken2("E", false, false);
-    ParsingToken parsingToken3("T", false, false);
+TEST(ParsingTokenTests, checkEquality) {
+    ParsingToken parsingToken("E", false);
+    ParsingToken parsingToken2("E", false);
+    ParsingToken parsingToken3("T", false);
 
     EXPECT_EQ(parsingToken, parsingToken2);
     EXPECT_NE(parsingToken, parsingToken3);
 }
 
-TEST(ParsingTokenTest, checkHash) {
-    ParsingToken parsingToken("E", false, false);
-    ParsingToken parsingToken2("E", false, false);
-    ParsingToken parsingToken3("T", false, false);
+TEST(ParsingTokenTests, checkHash) {
+    ParsingToken parsingToken("E", false);
+    ParsingToken parsingToken2("E", false);
+    ParsingToken parsingToken3("T", false);
 
     // To make the key of unordered_map as ParsingToken, you must pass the ParsingTokenHash
     // to tell the unordered_map how to do the hash of ParsingToken
@@ -31,19 +31,19 @@ TEST(ParsingTokenTest, checkHash) {
     EXPECT_EQ(countOfTokens[parsingToken3], 1);
 }
 
-TEST(ParsingTokenTest, checkGrammarConstruction) {
-    ParsingToken parsingToken("T", false, false);
-    ParsingToken parsingToken2("if", true, false);
+TEST(ParsingTokenTests, checkGrammarConstruction) {
+    ParsingToken parsingToken("T", false);
+    ParsingToken parsingToken2("if", true);
 
-    production_alternative productionAlternative;
+    t_productionAlternative productionAlternative;
     productionAlternative.push_back(parsingToken);
     productionAlternative.push_back(parsingToken2);
 
-    production_alternative productionAlternative2;
+    t_productionAlternative productionAlternative2;
     productionAlternative2.push_back(parsingToken);
     productionAlternative2.push_back(parsingToken2);
 
-    production_rule productionRule;
+    t_productionRule productionRule;
     productionRule.insert(productionAlternative);
     productionRule.insert(productionAlternative2);
 

@@ -10,8 +10,8 @@
 using namespace std;
 
 // type aliases for better readability.
-using production_alternative = vector<ParsingToken>;
-using production_rule = unordered_set<production_alternative, ParsingTokenVectorHash>;
-using grammar = unordered_map<ParsingToken, production_rule, ParsingTokenHash>;
+using t_productionAlternative = vector<ParsingToken>;
+using t_productionRule = unordered_set<t_productionAlternative, ParsingTokenVectorHash>;
+using t_grammar = unordered_map<ParsingToken, t_productionRule, ParsingTokenHash>;
 
 #endif //LEXICAL_PARSER_BUILDER_TYPES_H

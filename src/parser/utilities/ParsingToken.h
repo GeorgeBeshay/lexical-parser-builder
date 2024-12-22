@@ -11,11 +11,10 @@ class ParsingToken {
 private:
     string token;
     bool isTerminal;
-    bool isEpsilon;
 
 public:
     ParsingToken() = default;
-    ParsingToken(string token, bool isTerminal, bool isEpsilon);
+    ParsingToken(string token, bool isTerminal);
     string getToken();
     bool getIsTerminal();
     bool getIsEpsilon();
@@ -28,18 +27,18 @@ public:
 struct ParsingTokenHash {
     size_t operator()(const ParsingToken& pt) const {
         return hash<string>()(pt.token) ^
-               (hash<bool>()(pt.isTerminal) << 1) ^
-               (hash<bool>()(pt.isEpsilon) << 2);
+               (hash<bool>()(pt.isTerminal) << 1);
     }
 };
 
 struct ParsingTokenVectorHash {
     size_t operator()(const vector<ParsingToken>& vec) const {
-        size_t hash_value = 0;
+        size_t hashValue = 0;
         for (const auto& token : vec) {
-            hash_value ^= ParsingTokenHash{}(token) + 0x9e3779b9 + (hash_value << 6) + (hash_value >> 2);
+            // This operation makes hashing value for vector of ParsingToken, and done by this way for create hash value more distributed and uniform
+            hashValue ^= ParsingTokenHash{}(token) + 0x9e3779b9 + (hashValue << 6) + (hashValue >> 2);
         }
-        return hash_value;
+        return hashValue;
     }
 };
 

@@ -1,9 +1,8 @@
 #include "ParsingToken.h"
 
-ParsingToken::ParsingToken(string token, bool isTerminal, bool isEpsilon) {
+ParsingToken::ParsingToken(string token, bool isTerminal) {
     this->token = token;
     this->isTerminal = isTerminal;
-    this->isEpsilon = isEpsilon;
 }
 
 string ParsingToken::getToken() {
@@ -15,13 +14,12 @@ bool ParsingToken::getIsTerminal() {
 }
 
 bool ParsingToken::getIsEpsilon() {
-    return this->isEpsilon;
+    return this->getIsTerminal() && this->getToken() == "\\L";
 }
 
 bool ParsingToken::operator==(const ParsingToken& other) const {
     return token == other.token &&
-           isTerminal == other.isTerminal &&
-           isEpsilon == other.isEpsilon;
+           isTerminal == other.isTerminal;
 }
 
 bool ParsingToken::operator!=(const ParsingToken &other) const {
