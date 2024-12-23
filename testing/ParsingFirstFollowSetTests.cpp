@@ -27,6 +27,7 @@ TEST(ParsingFirstSetTests, simpleTestcase) {
     t_parsingTokenSetMap firstSetsMap = ParserUtility::computeFirstSets(grammar);
 
     // Check
+    EXPECT_EQ(1, firstSetsMap.size());
     EXPECT_EQ(3, firstSetsMap[nonTerminal].size());
     EXPECT_EQ(1, firstSetsMap[nonTerminal].count(aTerminal));
     EXPECT_EQ(1, firstSetsMap[nonTerminal].count(bTerminal));
@@ -81,6 +82,7 @@ TEST(ParsingFirstSetTests, exampleFromLecture) {
     t_parsingTokenSetMap firstSetsMap = ParserUtility::computeFirstSets(grammar);
 
     // Check
+    EXPECT_EQ(5, firstSetsMap.size());
     EXPECT_EQ(2, firstSetsMap[nonTerminalE].size());
     EXPECT_EQ(2, firstSetsMap[nonTerminalEDash].size());
     EXPECT_EQ(2, firstSetsMap[nonTerminalT].size());
@@ -162,6 +164,7 @@ TEST(ParsingFirstSetTests, moreComplicatedExample) {
     t_parsingTokenSetMap firstSetsMap = ParserUtility::computeFirstSets(grammar);
 
     // Check
+    EXPECT_EQ(7, firstSetsMap.size());
     EXPECT_EQ(6, firstSetsMap[nonTerminalE].size());
     EXPECT_EQ(2, firstSetsMap[nonTerminalEDash].size());
     EXPECT_EQ(5, firstSetsMap[nonTerminalT].size());
