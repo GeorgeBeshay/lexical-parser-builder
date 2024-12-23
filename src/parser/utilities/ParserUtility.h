@@ -16,7 +16,7 @@ namespace ParserUtility {
 
     t_parsingTokenSetMap computeFollowSets(t_grammar grammar,
                                            ParsingToken startSymbol,
-                                           t_parsingTokenSetMap firstSets);
+                                           t_parsingTokenSetMap firstSetsMap);
 };
 
 

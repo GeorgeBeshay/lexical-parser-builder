@@ -8,6 +8,7 @@
 #include "ParsingToken.h"
 
 #define EPSILON_STRING "\\L"
+#define END_SYMBOL "$"
 
 using namespace std;
 

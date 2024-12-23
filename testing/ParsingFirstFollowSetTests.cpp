@@ -25,6 +25,7 @@ TEST(ParsingFirstSetTests, simpleTestcase) {
 
     // Act
     t_parsingTokenSetMap firstSetsMap = ParserUtility::computeFirstSets(grammar);
+    t_parsingTokenSetMap followSetsMap = ParserUtility::computeFollowSets(grammar, nonTerminal, firstSetsMap);
 
     // Check
     EXPECT_EQ(1, firstSetsMap.size());
@@ -32,6 +33,10 @@ TEST(ParsingFirstSetTests, simpleTestcase) {
     EXPECT_EQ(1, firstSetsMap[nonTerminal].count(aTerminal));
     EXPECT_EQ(1, firstSetsMap[nonTerminal].count(bTerminal));
     EXPECT_EQ(1, firstSetsMap[nonTerminal].count(epsTerminal));
+
+    EXPECT_EQ(1, followSetsMap.size());
+    EXPECT_EQ(1, followSetsMap[nonTerminal].size());
+    EXPECT_EQ(1, followSetsMap[nonTerminal].count(ParsingToken(END_SYMBOL, true)));
 }
 
 TEST(ParsingFirstSetTests, exampleFromLecture) {
@@ -119,25 +124,25 @@ TEST(ParsingFirstSetTests, moreComplicatedExample) {
     ParsingToken epsTerminal(EPSILON_STRING, true);
 
     t_prodRule prodRuleE({
-                                 {nonTerminalT, nonTerminalEDash}
-                         });
+        {nonTerminalT, nonTerminalEDash}
+    });
 
     t_prodRule prodRuleEDash({
-                                     {plusTerminal, nonTerminalE},
-                                     {epsTerminal}
-                             });
+        {plusTerminal, nonTerminalE},
+        {epsTerminal}
+    });
 
     t_prodRule prodRuleT({
-                                 {nonTerminalF, nonTerminalTDash}
-                         });
+        {nonTerminalF, nonTerminalTDash}
+    });
 
     t_prodRule prodRuleTDash({
-                                     {epsTerminal}
-                             });
+        {epsTerminal}
+    });
 
     t_prodRule prodRuleF({
-                                 {nonTerminalP, nonTerminalFDash}
-                         });
+        {nonTerminalP, nonTerminalFDash}
+    });
 
     t_prodRule prodRuleFDash ({
         {multiplyTerminal, nonTerminalF},

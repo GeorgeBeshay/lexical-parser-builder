@@ -11,17 +11,48 @@ t_parsingTokenSet handleNonTerminalProdAlt(t_grammar& grammar,
                                           unordered_map<ParsingToken, bool, ParsingTokenHash>& visited,
                                           t_prodAlt prodAlt);
 
+t_parsingTokenSet computeFollowSetsRecursive(t_grammar& grammar,
+                                             t_parsingTokenSetMap& followSetsMap,
+                                             unordered_map<ParsingToken, bool, ParsingTokenHash>& visited,
+                                             unordered_map<ParsingToken, bool, ParsingTokenHash>& finished,
+                                             const ParsingToken currentToken,
+                                             t_parsingTokenSetMap& firstSetsMap);
+
+t_parsingTokenSet handleFollowSetExtraction(t_grammar& grammar,
+                                            t_parsingTokenSetMap& followSetsMap,
+                                            unordered_map<ParsingToken, bool, ParsingTokenHash>& visited,
+                                            unordered_map<ParsingToken, bool, ParsingTokenHash>& finished,
+                                            const ParsingToken currentToken,
+                                            t_parsingTokenSetMap& firstSetsMap);
+
 //------------------------------------------------------------------------------------------------------
 
 t_parsingTokenSetMap ParserUtility::computeFirstSets(t_grammar grammar) {
-    t_parsingTokenSetMap firstSets;
+    t_parsingTokenSetMap firstSetsMap;
     unordered_map<ParsingToken, bool, ParsingTokenHash> visited;
 
-    for(const pair<ParsingToken, t_prodRule>& entry: grammar) {
-        computeFirstSetsRecursive(grammar, firstSets, visited, entry.first);
+    for(const pair<ParsingToken, t_prodRule>& grammarEntry: grammar) {
+        computeFirstSetsRecursive(grammar, firstSetsMap, visited, grammarEntry.first);
     }
 
-    return firstSets;
+    return firstSetsMap;
+}
+
+t_parsingTokenSetMap ParserUtility::computeFollowSets(t_grammar grammar, ParsingToken startSymbol,
+                                                      t_parsingTokenSetMap firstSetsMap) {
+    t_parsingTokenSetMap followSetsMap;
+    unordered_map<ParsingToken, bool, ParsingTokenHash> visited;
+    unordered_map<ParsingToken, bool, ParsingTokenHash> finished;
+
+    ParsingToken endSymbol(END_SYMBOL, true);
+    followSetsMap[startSymbol].insert(endSymbol);
+
+    for(const pair<ParsingToken, t_prodRule>& grammarEntry: grammar) {
+        computeFollowSetsRecursive(grammar, followSetsMap, visited, finished,
+                                   grammarEntry.first, firstSetsMap);
+    }
+
+    return followSetsMap;
 }
 
 // Implementation of prototype functions
@@ -110,4 +141,76 @@ t_parsingTokenSet handleNonTerminalProdAlt(t_grammar& grammar,
 
     currentSet.insert(ParsingToken(EPSILON_STRING, true));
     return currentSet;
+}
+
+t_parsingTokenSet computeFollowSetsRecursive(t_grammar& grammar,
+                                             t_parsingTokenSetMap& followSetsMap,
+                                             unordered_map<ParsingToken, bool, ParsingTokenHash>& visited,
+                                             unordered_map<ParsingToken, bool, ParsingTokenHash>& finished,
+                                             const ParsingToken currentToken,
+                                             t_parsingTokenSetMap& firstSetsMap) {
+    if (finished[currentToken]) {
+        return followSetsMap[currentToken];
+    }
+
+    if (visited[currentToken]) {
+        throw runtime_error("The grammar has left recursion, detected in computation of follow sets");
+    }
+
+    visited[currentToken] = true;
+    t_parsingTokenSet currentTokenFollowSet = handleFollowSetExtraction(grammar, followSetsMap, visited, finished, currentToken, firstSetsMap);
+
+    finished[currentToken] = true;
+    followSetsMap[currentToken].insert(currentTokenFollowSet.begin(), currentTokenFollowSet.end());
+
+    return followSetsMap[currentToken];
+}
+
+t_parsingTokenSet handleFollowSetExtraction(t_grammar& grammar,
+                                            t_parsingTokenSetMap& followSetsMap,
+                                            unordered_map<ParsingToken, bool, ParsingTokenHash>& visited,
+                                            unordered_map<ParsingToken, bool, ParsingTokenHash>& finished,
+                                            const ParsingToken currentToken,
+                                            t_parsingTokenSetMap& firstSetsMap) {
+    t_parsingTokenSet currentTokenFollowSet;
+
+    for(const pair<ParsingToken, t_prodRule>& grammarEntry: grammar) {
+        for(t_prodAlt prodAlt: grammarEntry.second) {
+            for(int i = 0; i < prodAlt.size(); i++) {
+                ParsingToken tempToken = prodAlt[i];
+                if(currentToken == tempToken) {
+                    bool takeFollowSetOfThisEntry = true;
+
+                    for(int j = i + 1; j < prodAlt.size(); j++) {
+                        ParsingToken followToken = prodAlt[j];
+                        if(followToken.getIsTerminal()) {
+                            currentTokenFollowSet.insert(followToken);
+                            takeFollowSetOfThisEntry = false;
+                            break;
+                        }
+                        else {
+                            t_parsingTokenSet tempFirstSet = firstSetsMap[followToken];
+                            t_parsingTokenSet tempFilteredFirstSet = filterSetFromEpsilon(tempFilteredFirstSet);
+                            currentTokenFollowSet.insert(tempFilteredFirstSet.begin(), tempFilteredFirstSet.end());
+
+                            if(!setContainsEpsilon(tempFirstSet)) {
+                                takeFollowSetOfThisEntry = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (takeFollowSetOfThisEntry) {
+                        t_parsingTokenSet tempFollowSet = computeFollowSetsRecursive(grammar, followSetsMap,
+                                                                                     visited, finished,
+                                                                                     grammarEntry.first, firstSetsMap);
+
+                        currentTokenFollowSet.insert(tempFollowSet.begin(), tempFollowSet.end());
+                    }
+                }
+            }
+        }
+    }
+
+    return currentTokenFollowSet;
 }
