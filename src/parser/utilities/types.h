@@ -7,10 +7,10 @@
 
 #include "ParsingToken.h"
 
-#define EPSILON_STRING "\\L"
-#define END_SYMBOL "$"
-
 using namespace std;
+
+const ParsingToken EPSILON_TOKEN ("\\L", true);
+const ParsingToken END_TOKEN ("$", true);
 
 // type aliases for better readability.
 using t_prodAlt = vector<ParsingToken>;

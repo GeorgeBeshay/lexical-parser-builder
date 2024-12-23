@@ -7,12 +7,12 @@
 
 using namespace std;
 
-TEST(ParsingFirstSetTests, simpleTestcase) {
+TEST(ParsingFirstFollowSetsTests, simpleTestcase) {
     // Prepare
     ParsingToken nonTerminal("E", false);
     ParsingToken aTerminal("a", true);
     ParsingToken bTerminal("b", true);
-    ParsingToken epsTerminal(EPSILON_STRING, true);
+    ParsingToken epsTerminal = EPSILON_TOKEN;
 
     t_prodRule prodRule({
         {aTerminal},
@@ -36,10 +36,10 @@ TEST(ParsingFirstSetTests, simpleTestcase) {
 
     EXPECT_EQ(1, followSetsMap.size());
     EXPECT_EQ(1, followSetsMap[nonTerminal].size());
-    EXPECT_EQ(1, followSetsMap[nonTerminal].count(ParsingToken(END_SYMBOL, true)));
+    EXPECT_EQ(1, followSetsMap[nonTerminal].count(END_TOKEN));
 }
 
-TEST(ParsingFirstSetTests, exampleFromLecture) {
+TEST(ParsingFirstFollowSetsTests, exampleFromLecture) {
     // Prepare
     ParsingToken nonTerminalE("E", false);
     ParsingToken nonTerminalEDash("EDash", false);
@@ -51,7 +51,7 @@ TEST(ParsingFirstSetTests, exampleFromLecture) {
     ParsingToken openBracketTerminal("(", true);
     ParsingToken closeBracketTerminal(")", true);
     ParsingToken idTerminal("id", true);
-    ParsingToken epsTerminal(EPSILON_STRING, true);
+    ParsingToken epsTerminal = EPSILON_TOKEN;
 
     t_prodRule prodRuleE({
         {nonTerminalT, nonTerminalEDash}
@@ -83,7 +83,7 @@ TEST(ParsingFirstSetTests, exampleFromLecture) {
     grammar[nonTerminalTDash] = prodRuleTDash;
     grammar[nonTerminalF] = prodRuleF;
 
-    ParsingToken endSymbol(END_SYMBOL, true);
+    ParsingToken endSymbol = END_TOKEN;
 
     // Act
     t_parsingTokenSetMap firstSetsMap = ParserUtility::computeFirstSets(grammar);
@@ -131,7 +131,7 @@ TEST(ParsingFirstSetTests, exampleFromLecture) {
     EXPECT_EQ(1, followSetsMap[nonTerminalF].count(multiplyTerminal));
 }
 
-TEST(ParsingFirstSetTests, moreComplicatedExample) {
+TEST(ParsingFirstFollowSetsTests, moreComplicatedExample) {
     // Prepare
     ParsingToken nonTerminalE("E", false);
     ParsingToken nonTerminalEDash("EDash", false);
@@ -146,7 +146,8 @@ TEST(ParsingFirstSetTests, moreComplicatedExample) {
     ParsingToken closeBracketTerminal(")", true);
     ParsingToken aTerminal("a", true);
     ParsingToken bTerminal("b", true);
-    ParsingToken epsTerminal(EPSILON_STRING, true);
+    ParsingToken epsTerminal = EPSILON_TOKEN;
+    ParsingToken endSymbol = END_TOKEN;
 
     t_prodRule prodRuleE({
         {nonTerminalT, nonTerminalEDash}
@@ -192,6 +193,7 @@ TEST(ParsingFirstSetTests, moreComplicatedExample) {
 
     // Act
     t_parsingTokenSetMap firstSetsMap = ParserUtility::computeFirstSets(grammar);
+    t_parsingTokenSetMap followSetsMap = ParserUtility::computeFollowSets(grammar, nonTerminalE, firstSetsMap);
 
     // Check
     EXPECT_EQ(7, firstSetsMap.size());
@@ -202,4 +204,13 @@ TEST(ParsingFirstSetTests, moreComplicatedExample) {
     EXPECT_EQ(5, firstSetsMap[nonTerminalF].size());
     EXPECT_EQ(2, firstSetsMap[nonTerminalFDash].size());
     EXPECT_EQ(4, firstSetsMap[nonTerminalP].size());
+
+    EXPECT_EQ(7, followSetsMap.size());
+    EXPECT_EQ(2, followSetsMap[nonTerminalE].size());
+    EXPECT_EQ(2, followSetsMap[nonTerminalEDash].size());
+    EXPECT_EQ(3, followSetsMap[nonTerminalT].size());
+    EXPECT_EQ(3, followSetsMap[nonTerminalTDash].size());
+    EXPECT_EQ(3, followSetsMap[nonTerminalF].size());
+    EXPECT_EQ(3, followSetsMap[nonTerminalFDash].size());
+    EXPECT_EQ(4, followSetsMap[nonTerminalP].size());
 }
