@@ -83,8 +83,11 @@ TEST(ParsingFirstSetTests, exampleFromLecture) {
     grammar[nonTerminalTDash] = prodRuleTDash;
     grammar[nonTerminalF] = prodRuleF;
 
+    ParsingToken endSymbol(END_SYMBOL, true);
+
     // Act
     t_parsingTokenSetMap firstSetsMap = ParserUtility::computeFirstSets(grammar);
+    t_parsingTokenSetMap followSetsMap = ParserUtility::computeFollowSets(grammar, nonTerminalE, firstSetsMap);
 
     // Check
     EXPECT_EQ(5, firstSetsMap.size());
@@ -104,6 +107,28 @@ TEST(ParsingFirstSetTests, exampleFromLecture) {
     EXPECT_EQ(1, firstSetsMap[nonTerminalEDash].count(epsTerminal));
     EXPECT_EQ(1, firstSetsMap[nonTerminalF].count(openBracketTerminal));
     EXPECT_EQ(1, firstSetsMap[nonTerminalF].count(idTerminal));
+
+    EXPECT_EQ(5, followSetsMap.size());
+    EXPECT_EQ(2, followSetsMap[nonTerminalE].size());
+    EXPECT_EQ(2, followSetsMap[nonTerminalEDash].size());
+    EXPECT_EQ(3, followSetsMap[nonTerminalT].size());
+    EXPECT_EQ(3, followSetsMap[nonTerminalTDash].size());
+    EXPECT_EQ(4, followSetsMap[nonTerminalF].size());
+
+    EXPECT_EQ(1, followSetsMap[nonTerminalE].count(endSymbol));
+    EXPECT_EQ(1, followSetsMap[nonTerminalE].count(closeBracketTerminal));
+    EXPECT_EQ(1, followSetsMap[nonTerminalEDash].count(endSymbol));
+    EXPECT_EQ(1, followSetsMap[nonTerminalEDash].count(closeBracketTerminal));
+    EXPECT_EQ(1, followSetsMap[nonTerminalT].count(plusTerminal));
+    EXPECT_EQ(1, followSetsMap[nonTerminalT].count(endSymbol));
+    EXPECT_EQ(1, followSetsMap[nonTerminalT].count(closeBracketTerminal));
+    EXPECT_EQ(1, followSetsMap[nonTerminalTDash].count(plusTerminal));
+    EXPECT_EQ(1, followSetsMap[nonTerminalTDash].count(endSymbol));
+    EXPECT_EQ(1, followSetsMap[nonTerminalTDash].count(closeBracketTerminal));
+    EXPECT_EQ(1, followSetsMap[nonTerminalF].count(plusTerminal));
+    EXPECT_EQ(1, followSetsMap[nonTerminalF].count(endSymbol));
+    EXPECT_EQ(1, followSetsMap[nonTerminalF].count(closeBracketTerminal));
+    EXPECT_EQ(1, followSetsMap[nonTerminalF].count(multiplyTerminal));
 }
 
 TEST(ParsingFirstSetTests, moreComplicatedExample) {

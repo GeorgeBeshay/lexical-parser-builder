@@ -190,7 +190,7 @@ t_parsingTokenSet handleFollowSetExtraction(t_grammar& grammar,
                         }
                         else {
                             t_parsingTokenSet tempFirstSet = firstSetsMap[followToken];
-                            t_parsingTokenSet tempFilteredFirstSet = filterSetFromEpsilon(tempFilteredFirstSet);
+                            t_parsingTokenSet tempFilteredFirstSet = filterSetFromEpsilon(tempFirstSet);
                             currentTokenFollowSet.insert(tempFilteredFirstSet.begin(), tempFilteredFirstSet.end());
 
                             if(!setContainsEpsilon(tempFirstSet)) {
@@ -200,7 +200,7 @@ t_parsingTokenSet handleFollowSetExtraction(t_grammar& grammar,
                         }
                     }
 
-                    if (takeFollowSetOfThisEntry) {
+                    if (takeFollowSetOfThisEntry && grammarEntry.first != currentToken) {
                         t_parsingTokenSet tempFollowSet = computeFollowSetsRecursive(grammar, followSetsMap,
                                                                                      visited, finished,
                                                                                      grammarEntry.first, firstSetsMap);
