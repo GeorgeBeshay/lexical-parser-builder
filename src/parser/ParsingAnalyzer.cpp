@@ -11,8 +11,8 @@ ParsingAnalyzer::ParsingAnalyzer(string &parsingTableFp): parsingTable(parsingTa
 bool ParsingAnalyzer::doParseStep(const ParsingToken& nextInputToken) {
 
     if (this->parsingStack.empty()) {
-        // TODO
-
+        this->outputFileContent.emplace_back(ERROR_FAILURE_CASE);
+        return MATCHED_PARSING_STEP;
     }
 
     const ParsingToken stackTopElement = this->parsingStack.top();

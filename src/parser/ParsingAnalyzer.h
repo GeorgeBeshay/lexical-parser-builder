@@ -7,6 +7,7 @@
 #define ERROR_TERMINAL_CASE(expectedToken) ("Error: Input token mismatch, expected a " + expectedToken + " instead. Recovery: inserting " + expectedToken + ".")
 #define ERROR_NT_EMPTY_ENTRY_CASE(stackTopElement, inputToken) ("Error: M[" + stackTopElement + ", " + inputToken + "] entry in parsing table is empty. Recovery: Will skip this input token.")
 #define ERROR_NT_SYNC_ENTRY_CASE(stackTopElement, inputToken) ("Error: M[" + stackTopElement + ", " + inputToken + "] entry in parsing table is SYNC. Recovery: Will pop and neglect the stack top element.")
+#define ERROR_FAILURE_CASE ("Error: parsing stack has no more elements.")
 #define MATCHED_PARSING_STEP true
 #define NON_MATCHED_PARSING_STEP false
 
