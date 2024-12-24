@@ -54,3 +54,31 @@ TEST(ParsingAnalyzerTests, additionAndMultiplicationStatement) {
     EXPECT_TRUE(areFilesEqual(actualOutputFp, expectedOutputFp));
 
 }
+
+TEST(ParsingAnalyzerTests, containingTwoErrors) {
+    // Arrange
+    string parsingTableFilePath = "../testing/parsing-table-tests/lecture-example/expectedTable.txt";
+    string expectedOutputFp = "../testing/parsing-analyzer-tests/output/containingTwoErrors-expected-output.txt";
+    string actualOutputFp = "../testing/parsing-analyzer-tests/output/containingTwoErrors-actual-output.txt";
+    t_prodAlt inputParsingTokens {
+        ParsingToken("(", true),
+        ParsingToken("id", true),
+        ParsingToken("+", true),
+        ParsingToken("(", true),
+        ParsingToken("*", true),
+        ParsingToken("id", true),
+        ParsingToken(")", true),
+        END_TOKEN
+    };
+
+    // Act
+    ParsingAnalyzer parsingAnalyzer(parsingTableFilePath);
+    for (auto& inputParsingToken: inputParsingTokens) {
+        while (!parsingAnalyzer.doParseStep(inputParsingToken));
+    }
+
+    // Assert
+    parsingAnalyzer.exportDerivation(actualOutputFp);
+    EXPECT_TRUE(areFilesEqual(actualOutputFp, expectedOutputFp));
+
+}
