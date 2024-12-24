@@ -13,6 +13,7 @@ add_executable(
         src/lexical-analyzer/utilities/TransitionTableContainer.cpp
         src/lexical-analyzer/utilities/types.h
         src/lexical-analyzer/utilities/LexicalUtility.cpp
+        src/parser/ParserAnalyzer.cpp
 )
 
 add_executable(
@@ -20,6 +21,7 @@ add_executable(
         src/AnalyzerMain.cpp
         src/lexical-analyzer/utilities/TransitionTableContainer.cpp
         src/lexical-analyzer/LexicalAnalyzer.cpp
+        src/parser/ParserAnalyzer.cpp
 )
 
 # Related to GoogleTest
@@ -48,6 +50,7 @@ add_executable(
         testing/ParsingTokenTests.cpp
         src/parser/utilities/ParserUtility.cpp
         testing/ParsingFirstFollowSetTests.cpp
+        src/parser/ParserAnalyzer.cpp
 )
 target_link_libraries(
         lexical-parser-builder-testing

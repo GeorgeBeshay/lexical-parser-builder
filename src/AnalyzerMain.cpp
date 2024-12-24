@@ -41,9 +41,9 @@ int main(int argc, char* argv[]) {
 
     while(lexicalAnalyzer.isNextTokenAvailable()) {
         currentPair = lexicalAnalyzer.getNextToken();
-        if (currentPair.first.empty() && currentPair.second.empty()) {
-            break;
-        }
+//        if (currentPair.first.empty() && currentPair.second.empty()) {
+//            break;
+//        }
 
         if(currentPair.first == IDENTIFIER_CLASS) {
             symbolTable[currentPair.second] = "";
