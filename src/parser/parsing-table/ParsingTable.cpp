@@ -120,9 +120,63 @@ bool ParsingTable::writeFile(string &filePath) {
 }
 
 bool ParsingTable::readFile(string &filePath) {
+    ifstream inFile(filePath);
 
+    if (!inFile) {
+        cerr << "Error opening file for reading the parsing table!" + filePath << endl;
+        return false;
+    }
+
+    string line;
+
+    while (getline(inFile, line)) {
+        if (line.empty()) break;
+        stringstream ss(line);
+        string token;
+        bool isTerminal;
+        int index;
+        ss >> token >> isTerminal >> index;
+        this->nonTerminalToIndexMapper[ParsingToken(token, isTerminal)] = index;
+    }
+
+    while (getline(inFile, line)) {
+        if (line.empty()) break;
+        stringstream ss(line);
+        string token;
+        bool isTerminal;
+        int index;
+        ss >> token >> isTerminal >> index;
+        this->terminalToIndexMapper[ParsingToken(token, isTerminal)] = index;
+    }
+
+    getline(inFile, line);
+    stringstream sizeStream(line);
+    int nonTerminalSize, terminalSize;
+    sizeStream >> nonTerminalSize >> terminalSize;
+
+    this->parsingTable.resize(nonTerminalSize, vector<t_prodAlt>(terminalSize));
+
+    while (getline(inFile, line)) {
+        if (line.empty()) break;
+        stringstream ss(line);
+        int i, j;
+        ss >> i >> j;
+
+        vector<ParsingToken> production;
+        string token;
+        bool isTerminal;
+
+        while (ss >> token >> isTerminal) {
+            production.emplace_back(token, isTerminal);
+        }
+
+        this->parsingTable[i][j] = production;
+    }
+
+    inFile.close();
     return true;
 }
+
 
 void ParsingTable::constructNonTerminalIndexMapper() {
     for(const pair<ParsingToken, t_prodRule>& grammarEntry: this->grammar) {
