@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include <unordered_map>
 #include <string>
-#include <fstream>
 
 #include "../src/parser/utilities/ParsingToken.h"
 #include "../src/parser/utilities/types.h"
@@ -10,6 +9,34 @@
 using namespace std;
 
 bool areFilesEqual(string file1, string file2);
+
+TEST(ParsingTableTests, simpleTestcase) {
+    // Prepare
+    ParsingToken nonTerminal("E", false);
+    ParsingToken aTerminal("a", true);
+    ParsingToken bTerminal("b", true);
+    ParsingToken epsTerminal = EPSILON_TOKEN;
+
+    t_prodRule prodRule({
+                                {aTerminal},
+                                {bTerminal},
+                                {epsTerminal}
+                        });
+
+    t_grammar grammar;
+    grammar[nonTerminal] = prodRule;
+    string filePath = "../testing/parsing-table-tests/simple-testcase/writtenFile.txt";
+    string expectedFilePath = "../testing/parsing-table-tests/simple-testcase/expectedTable.txt";
+
+    // Act
+    ParsingTable parsingTable(nonTerminal, grammar);
+    parsingTable.writeFile(filePath);
+
+    ParsingTable parsingTable1(filePath);
+    parsingTable1.writeFile(filePath);
+
+    EXPECT_EQ(true, areFilesEqual(filePath, expectedFilePath));
+}
 
 TEST(ParsingTableTests, lectureExample) {
     // Prepare
