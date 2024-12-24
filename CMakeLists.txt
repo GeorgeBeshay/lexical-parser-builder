@@ -50,6 +50,8 @@ add_executable(
         testing/ParsingTokenTests.cpp
         src/parser/utilities/ParserUtility.cpp
         testing/ParsingFirstFollowSetTests.cpp
+        src/parser/parsing-table/ParsingTable.cpp
+        testing/ParsingTableTests.cpp
         src/parser/ParserAnalyzer.cpp
 )
 target_link_libraries(
