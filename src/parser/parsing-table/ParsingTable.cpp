@@ -90,6 +90,8 @@ bool ParsingTable::writeFile(string &filePath) {
         return false;
     }
 
+    outFile << this->startSymbol.getToken() << " " << this->startSymbol.getIsTerminal() << endl;
+
     for(const pair<ParsingToken, int>& nonTerminalPair: this->nonTerminalToIndexMapper) {
         outFile << nonTerminalPair.first.getToken() << " " << nonTerminalPair.first.getIsTerminal() << " " << nonTerminalPair.second << endl;
     }
@@ -128,6 +130,15 @@ bool ParsingTable::readFile(string &filePath) {
     }
 
     string line;
+
+    if(getline(inFile, line)) {
+        stringstream ss(line);
+        string token;
+        bool isTerminal;
+        ss >> token >> isTerminal;
+
+        this->startSymbol = ParsingToken(token, isTerminal);
+    }
 
     while (getline(inFile, line)) {
         if (line.empty()) break;
