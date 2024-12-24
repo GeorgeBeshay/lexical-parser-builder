@@ -93,6 +93,8 @@ TEST(ParsingFirstFollowSetsTests, exampleFromLecture) {
     t_parsingTokenSetMap followSetsMap = ParserUtility::computeFollowSets(grammar, nonTerminalE, firstSetsMap);
 
     ParsingTable parsingTable(nonTerminalE, grammar);
+    string path = "../testing/test.txt";
+    parsingTable.writeFile(path);
 
     // Check
     EXPECT_EQ(5, firstSetsMap.size());

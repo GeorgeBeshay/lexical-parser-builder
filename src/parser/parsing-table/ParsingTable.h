@@ -2,6 +2,9 @@
 #define LEXICAL_PARSER_BUILDER_PARSINGTABLE_H
 
 #include <unordered_map>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
 #include "../utilities/ParsingToken.h"
 #include "../utilities/ParserUtility.h"

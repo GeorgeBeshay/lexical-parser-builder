@@ -63,6 +63,8 @@ bool ParsingTable::constructParsingTable(t_grammar &grammar, t_parsingTokenSetMa
             }
         }
     }
+
+    return true;
 }
 
 t_prodAlt ParsingTable::move(ParsingToken nonTerminal, ParsingToken terminal) {
@@ -81,6 +83,38 @@ t_prodAlt ParsingTable::move(ParsingToken nonTerminal, ParsingToken terminal) {
 }
 
 bool ParsingTable::writeFile(string &filePath) {
+    ofstream outFile(filePath);
+
+    if (!outFile) {
+        cerr << "Error opening file for writing the parsing table! " + filePath << endl;
+        return false;
+    }
+
+    for(const pair<ParsingToken, int>& nonTerminalPair: this->nonTerminalToIndexMapper) {
+        outFile << nonTerminalPair.first.getToken() << " " << nonTerminalPair.first.getIsTerminal() << " " << nonTerminalPair.second << endl;
+    }
+    outFile << endl;
+
+    for(const pair<ParsingToken, int>& terminalPair: this->terminalToIndexMapper) {
+        outFile << terminalPair.first.getToken() << " " << terminalPair.first.getIsTerminal() << " " << terminalPair.second << endl;
+    }
+    outFile << endl;
+
+    outFile << nonTerminalToIndexMapper.size() << " " << terminalToIndexMapper.size() << endl;
+
+    for(int i = 0; i < this->parsingTable.size(); i++) {
+        for(int j = 0; j < this->parsingTable[i].size(); j++) {
+            outFile << i << " " << j;
+
+            for(ParsingToken parsingToken: this->parsingTable[i][j]) {
+                outFile << " " << parsingToken.getToken() << " " << parsingToken.getIsTerminal();
+            }
+
+            outFile << endl;
+        }
+    }
+
+    outFile.close();
 
     return true;
 }
