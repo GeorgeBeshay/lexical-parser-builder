@@ -8,7 +8,7 @@
 
 using namespace std;
 
-bool areFilesEqual(string file1, string file2);
+bool areFilesEqual(const string& file1, const string& file2);
 
 TEST(ParsingTableTests, simpleTestcase) {
     // Prepare

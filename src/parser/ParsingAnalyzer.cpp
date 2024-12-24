@@ -1,13 +1,14 @@
-#include "ParserAnalyzer.h"
+#include "ParsingAnalyzer.h"
 
-ParserAnalyzer::ParserAnalyzer(string &parsingTableFp): parsingTable(parsingTableFp){
+ParsingAnalyzer::ParsingAnalyzer(string &parsingTableFp): parsingTable(parsingTableFp){
     this->parsingStack.push(END_TOKEN);
     this->parsingStack.push(this->parsingTable.getStartSymbol());
     this->appendTokenToCurrentDerivation(this->parsingTable.getStartSymbol().getToken());
     this->appendTokenToCurrentDerivation(END_TOKEN.getToken());
+    this->outputFileContent.emplace_back(this->currentDerivation);
 }
 
-bool ParserAnalyzer::doParseStep(const ParsingToken& nextInputToken) {
+bool ParsingAnalyzer::doParseStep(const ParsingToken& nextInputToken) {
 
     if (this->parsingStack.empty()) {
         // TODO
@@ -27,7 +28,6 @@ bool ParserAnalyzer::doParseStep(const ParsingToken& nextInputToken) {
     // bad cases
     if (stackTopElement.getIsTerminal()) {
         this->outputFileContent.emplace_back(ERROR_TERMINAL_CASE(stackTopElement.getToken()));
-        cout << ERROR_TERMINAL_CASE(stackTopElement.getToken()) << endl;
         this->parsingStack.pop();
         return NON_MATCHED_PARSING_STEP;
     }
@@ -36,37 +36,34 @@ bool ParserAnalyzer::doParseStep(const ParsingToken& nextInputToken) {
 
     if (prodAlt.empty()) {
         this->outputFileContent.emplace_back(ERROR_NT_EMPTY_ENTRY_CASE(stackTopElement.getToken(), nextInputToken.getToken()));
-        cout << ERROR_NT_EMPTY_ENTRY_CASE(stackTopElement.getToken(), nextInputToken.getToken()) << endl;
         return MATCHED_PARSING_STEP;        // skip the current input token (don't match it with anything).
     }
 
     if (prodAlt.size() == 1 && (prodAlt[0] == SYNC_TOKEN)) {
         this->outputFileContent.emplace_back(ERROR_NT_SYNC_ENTRY_CASE(stackTopElement.getToken(), nextInputToken.getToken()));
-        cout << ERROR_NT_SYNC_ENTRY_CASE(stackTopElement.getToken(), nextInputToken.getToken()) << endl;
         this->parsingStack.pop();
         return NON_MATCHED_PARSING_STEP;
     }
 
-    // derivation case
-    if (!prodAlt.empty()) {
-        this->outputProds.emplace_back(stackTopElement, prodAlt);
-        this->replaceFirstTokenInCurrentDerivation(stackTopElement.getToken(), prodAlt);
-        this->parsingStack.pop();
-        for (auto i = prodAlt.rbegin(); i != prodAlt.rend() ; i++) {
-            if (*i == EPSILON_TOKEN) continue;  // don't push the epsilon token to the stack.
-            this->parsingStack.push(*i);
-        }
-        return NON_MATCHED_PARSING_STEP;
+    // derivation case, prodAlt is not empty for sure.
+    this->outputProds.emplace_back(stackTopElement, prodAlt);
+    this->replaceFirstTokenInCurrentDerivation(stackTopElement.getToken(), prodAlt);
+    this->outputFileContent.emplace_back(this->currentDerivation);
+    this->parsingStack.pop();
+    for (auto i = prodAlt.rbegin(); i != prodAlt.rend() ; i++) {
+        if (*i == EPSILON_TOKEN) continue;  // don't push the epsilon token to the stack.
+        this->parsingStack.push(*i);
     }
+    return NON_MATCHED_PARSING_STEP;
 
 }
 
-void ParserAnalyzer::appendTokenToCurrentDerivation(const string& newToken) {
+void ParsingAnalyzer::appendTokenToCurrentDerivation(const string& newToken) {
     if (!this->currentDerivation.empty()) this->currentDerivation += " ";
     this->currentDerivation += newToken;
 }
 
-bool ParserAnalyzer::replaceFirstTokenInCurrentDerivation(const string &oldToken, t_prodAlt prodAlt) {
+bool ParsingAnalyzer::replaceFirstTokenInCurrentDerivation(const string &oldToken, t_prodAlt prodAlt) {
     string concatenatedProdAlt;
     for (const auto& token: prodAlt) {
         if (token == EPSILON_TOKEN) continue;
@@ -75,14 +72,36 @@ bool ParserAnalyzer::replaceFirstTokenInCurrentDerivation(const string &oldToken
     if (!concatenatedProdAlt.empty()) concatenatedProdAlt.pop_back();       // remove the extra white space.
 
     size_t startingIdx = this->currentDerivation.find(oldToken);
-    if (startingIdx != string::npos) {
+    if (startingIdx == string::npos) {
         return false;
     }
 
-    this->currentDerivation.replace(startingIdx, concatenatedProdAlt.size(), concatenatedProdAlt);
+    this->currentDerivation.replace(
+        startingIdx,
+        oldToken.size() + (concatenatedProdAlt.empty() ? 1 : 0),
+        concatenatedProdAlt
+    );
+
     return true;
 }
 
-bool ParserAnalyzer::exportDerivation() {
-    return false;
+bool ParsingAnalyzer::exportDerivation(const string& destinationFp) {
+
+    ofstream outFile(destinationFp);  // Open the file for writing
+    if (!outFile) {
+        cerr << "Error: Unable to open file for writing parsing analyzer output: " << endl;
+        return false;
+    }
+
+    for (const auto& line : this->outputFileContent) {
+        outFile << line << endl;
+    }
+
+    outFile.close();
+    if (outFile.fail()) {  // Check if there was an error during write
+        cerr << "Error: Unable to close file after writing parsing analyzer output: " << endl;
+        return false;
+    }
+
+    return true;
 }

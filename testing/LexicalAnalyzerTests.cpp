@@ -7,7 +7,7 @@
 
 using namespace std;
 
-bool areFilesEqual(string file1, string file2);
+bool areFilesEqual(const string& file1, const string& file2);
 
 TEST(LexicalAnalyzerTest, simpleTestProgram) {
     // Arrange
@@ -52,7 +52,7 @@ TEST(LexicalAnalyzerTest, simpleTestProgramWithSomeUnknownCharacters) {
 }
 
 
-bool areFilesEqual(string file1, string file2) {
+bool areFilesEqual(const string& file1, const string& file2) {
     ifstream file1Stream(file1);
     ifstream file2Stream(file2);
 

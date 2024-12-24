@@ -1,5 +1,5 @@
-#ifndef LEXICAL_PARSER_BUILDER_PARSERANALYZER_H
-#define LEXICAL_PARSER_BUILDER_PARSERANALYZER_H
+#ifndef LEXICAL_PARSER_BUILDER_PARSINGANALYZER_H
+#define LEXICAL_PARSER_BUILDER_PARSINGANALYZER_H
 
 #include <stack>
 #include "parsing-table/ParsingTable.h"
@@ -10,12 +10,12 @@
 #define MATCHED_PARSING_STEP true
 #define NON_MATCHED_PARSING_STEP false
 
-class ParserAnalyzer {
+class ParsingAnalyzer {
 
 public:
-    explicit ParserAnalyzer(string& parsingTableFp);
+    explicit ParsingAnalyzer(string& parsingTableFp);
     bool doParseStep(const ParsingToken& nextInputToken);
-    bool exportDerivation();
+    bool exportDerivation(const string& destinationFp);
 
 private:
     ParsingTable parsingTable;
@@ -30,4 +30,4 @@ private:
 };
 
 
-#endif //LEXICAL_PARSER_BUILDER_PARSERANALYZER_H
+#endif //LEXICAL_PARSER_BUILDER_PARSINGANALYZER_H
