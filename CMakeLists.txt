@@ -49,6 +49,7 @@ add_executable(
         src/parser/utilities/ParserUtility.cpp
         testing/ParsingFirstFollowSetTests.cpp
         src/parser/parsing-table/ParsingTable.cpp
+        testing/ParsingTableTests.cpp
 )
 target_link_libraries(
         lexical-parser-builder-testing
