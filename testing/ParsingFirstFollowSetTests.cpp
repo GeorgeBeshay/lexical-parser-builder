@@ -4,6 +4,7 @@
 #include "../src/parser/utilities/ParsingToken.h"
 #include "../src/parser/utilities/types.h"
 #include "../src/parser/utilities/ParserUtility.h"
+#include "../src/parser/parsing-table/ParsingTable.h"
 
 using namespace std;
 
@@ -26,6 +27,8 @@ TEST(ParsingFirstFollowSetsTests, simpleTestcase) {
     // Act
     t_parsingTokenSetMap firstSetsMap = ParserUtility::computeFirstSets(grammar);
     t_parsingTokenSetMap followSetsMap = ParserUtility::computeFollowSets(grammar, nonTerminal, firstSetsMap);
+
+    ParsingTable parsingTable(nonTerminal, grammar);
 
     // Check
     EXPECT_EQ(1, firstSetsMap.size());
@@ -88,6 +91,8 @@ TEST(ParsingFirstFollowSetsTests, exampleFromLecture) {
     // Act
     t_parsingTokenSetMap firstSetsMap = ParserUtility::computeFirstSets(grammar);
     t_parsingTokenSetMap followSetsMap = ParserUtility::computeFollowSets(grammar, nonTerminalE, firstSetsMap);
+
+    ParsingTable parsingTable(nonTerminalE, grammar);
 
     // Check
     EXPECT_EQ(5, firstSetsMap.size());
@@ -194,6 +199,8 @@ TEST(ParsingFirstFollowSetsTests, moreComplicatedExample) {
     // Act
     t_parsingTokenSetMap firstSetsMap = ParserUtility::computeFirstSets(grammar);
     t_parsingTokenSetMap followSetsMap = ParserUtility::computeFollowSets(grammar, nonTerminalE, firstSetsMap);
+
+    ParsingTable parsingTable(nonTerminalE, grammar);
 
     // Check
     EXPECT_EQ(7, firstSetsMap.size());
