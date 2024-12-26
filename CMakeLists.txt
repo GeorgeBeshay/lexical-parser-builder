@@ -13,6 +13,11 @@ add_executable(
         src/lexical-analyzer/utilities/TransitionTableContainer.cpp
         src/lexical-analyzer/utilities/types.h
         src/lexical-analyzer/utilities/LexicalUtility.cpp
+        src/parser/utilities/ParsingToken.cpp
+        src/parser/utilities/Grammar.cpp
+        src/parser/utilities/GrammarRule.cpp
+        src/parser/utilities/types.h
+
 )
 
 add_executable(
@@ -46,6 +51,10 @@ add_executable(
         testing/LexicalAnalyzerTests.cpp
         src/parser/utilities/ParsingToken.cpp
         testing/ParsingTokenTests.cpp
+        src/parser/utilities/Grammar.cpp
+        src/parser/utilities/GrammarRule.cpp
+        src/parser/utilities/types.h
+
 )
 target_link_libraries(
         lexical-parser-builder-testing
