@@ -39,6 +39,8 @@ public:
 
     void removeLeftRecursion();
 
+    void printGrammar();
+
     ParsingToken getStartSymbol();
 
     vector<Rule> getRules();

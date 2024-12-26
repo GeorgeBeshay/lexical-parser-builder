@@ -384,7 +384,10 @@ t_grammar Grammar::get_t_grammar() const {
     return t_grammar_map;
 }
 
-
+void Grammar::printGrammar() {
+    for (auto g: grammar)
+        std::cout << g.second.toString() << std::endl;
+}
 
 
 
