@@ -8,7 +8,7 @@
 #include <sstream>
 #include <vector>
 #include "../dfa/DFAGenerator.h"
-#include "types.h"
+#include "lexicalTypes.h"
 
 using namespace std;
 
@@ -22,28 +22,28 @@ public:
     }
 
     TransitionTableContainer(
-            unordered_map<state, unordered_map<symbol, state>> transMap,
-            unordered_map<state, clazz> acceptingStates,
-            state initialState,
-            int numberOfStates,
-            unordered_set<symbol> symbols
+        unordered_map<t_state, unordered_map<t_symbol, t_state>> transMap,
+        unordered_map<t_state, t_clazz> acceptingStates,
+        t_state initialState,
+        int numberOfStates,
+        unordered_set<t_symbol> symbols
             );
 
     bool writeFile(string& filePath);
 
     vector<vector<int>>& getTransitionTable() { return transitionTable; }
 
-    unordered_map<symbol, int>& getSymbolToIndexMapper() { return symbolToIndexMapper; }
+    unordered_map<t_symbol, int>& getSymbolToIndexMapper() { return symbolToIndexMapper; }
 
-    unordered_map<state, clazz>& getAcceptingStates() { return acceptingStates; }
+    unordered_map<t_state, t_clazz>& getAcceptingStates() { return acceptingStates; }
 
-    state getInitialState() { return initialState; }
+    t_state getInitialState() { return initialState; }
 
 private:
     vector<vector<int>> transitionTable;
-    unordered_map<symbol, int> symbolToIndexMapper;
-    unordered_map<state, clazz> acceptingStates;
-    state initialState;
+    unordered_map<t_symbol, int> symbolToIndexMapper;
+    unordered_map<t_state, t_clazz> acceptingStates;
+    t_state initialState;
 
     bool readFile(string& filePath);
 };

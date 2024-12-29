@@ -1,0 +1,22 @@
+E $
+T EDash $
+F TDash EDash $
+( E ) TDash EDash $
+( T EDash ) TDash EDash $
+( F TDash EDash ) TDash EDash $
+( id TDash EDash ) TDash EDash $
+( id EDash ) TDash EDash $
+( id + T EDash ) TDash EDash $
+( id + F TDash EDash ) TDash EDash $
+( id + ( E ) TDash EDash ) TDash EDash $
+Error: M[E, *] entry in parsing table is empty. Recovery: Will skip this input token.
+( id + ( T EDash ) TDash EDash ) TDash EDash $
+( id + ( F TDash EDash ) TDash EDash ) TDash EDash $
+( id + ( id TDash EDash ) TDash EDash ) TDash EDash $
+( id + ( id EDash ) TDash EDash ) TDash EDash $
+( id + ( id ) TDash EDash ) TDash EDash $
+( id + ( id ) EDash ) TDash EDash $
+( id + ( id ) ) TDash EDash $
+Error: Input token mismatch, expected a ) instead. Recovery: inserting ).
+( id + ( id ) ) EDash $
+( id + ( id ) ) $

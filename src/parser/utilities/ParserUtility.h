@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include <iostream>
 
-#include "types.h"
+#include "parsingTypes.h"
 #include "ParsingToken.h"
 
 using namespace std;
