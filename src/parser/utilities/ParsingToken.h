@@ -23,6 +23,13 @@ public:
     bool operator!=(const ParsingToken& other) const;
 };
 
+struct Comparator {
+    // Custom comparator for sorting or storing symbols in ordered containers.
+    bool operator()(const ParsingToken &a, const ParsingToken &b) const {
+        return a.getToken() == b.getToken() && a.getIsTerminal() == b.getIsTerminal();
+    }
+};
+
 struct ParsingTokenHash {
     size_t operator()(const ParsingToken& pt) const {
         return hash<string>()(pt.getToken()) ^
