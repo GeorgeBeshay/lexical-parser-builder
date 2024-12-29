@@ -11,11 +11,11 @@ using namespace std;
 #define IDENTIFIER_CLASS "id"
 
 // type aliases for better readability.
-using state = int;
-using symbol = char;
-using clazz = string;
-using group = unordered_set<state>;
-using statesPartition = vector<group>;
-using lexem = string;
+using t_state = int;
+using t_symbol = char;
+using t_clazz = string;
+using t_group = unordered_set<t_state>;
+using t_statesPartition = vector<t_group>;
+using t_lexem = string;
 
 #endif //LEXICAL_PARSER_BUILDER_LEXICALTYPES_H

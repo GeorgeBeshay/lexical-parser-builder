@@ -17,45 +17,45 @@ class DFAGenerator {
 public:
 
     DFAGenerator(
-            const unordered_map<state, unordered_map<symbol, unordered_set<state>>>& nfaTransMap,
-            const unordered_map<state, unordered_set<state>>& nfaEpsilonTransMap,
-            const unordered_map<state, clazz>& nfaAcceptingStates,
-            const unordered_set<state>& nfaInitialStates,
-            const unordered_set<symbol>& symbols
+            const unordered_map<t_state, unordered_map<t_symbol, unordered_set<t_state>>>& nfaTransMap,
+            const unordered_map<t_state, unordered_set<t_state>>& nfaEpsilonTransMap,
+            const unordered_map<t_state, t_clazz>& nfaAcceptingStates,
+            const unordered_set<t_state>& nfaInitialStates,
+            const unordered_set<t_symbol>& symbols
             );
 
-    statesPartition getInitialPartition();
+    t_statesPartition getInitialPartition();
 
     /*
      * getters
      * marked with 'const' to indicate that this method should not modify any of the object fields.
      * Can be safely called on const DFAGenerator objects.
      */
-    unordered_map<state, unordered_map<symbol, state>> getTransMap() const;
-    unordered_map<state, clazz> getAcceptingStates() const;
-    unordered_set<symbol> getLanguageSymbols() const;
-    state getInitialState() const;
+    unordered_map<t_state, unordered_map<t_symbol, t_state>> getTransMap() const;
+    unordered_map<t_state, t_clazz> getAcceptingStates() const;
+    unordered_set<t_symbol> getLanguageSymbols() const;
+    t_state getInitialState() const;
     int getNumberOfStates() const;
 
 private:
-    unordered_map<state, unordered_map<symbol, state>> transMap;
-    unordered_map<state, clazz> acceptingStates;
-    unordered_set<symbol> languageSymbols;
-    state initialState;
+    unordered_map<t_state, unordered_map<t_symbol, t_state>> transMap;
+    unordered_map<t_state, t_clazz> acceptingStates;
+    unordered_set<t_symbol> languageSymbols;
+    t_state initialState;
     int numberOfStates;
 
     // core algorithm
     void subsetConstruction(
-            const unordered_map<state, unordered_map<symbol, unordered_set<state>>>& nfaTransMap,
-            const unordered_map<state, unordered_set<state>>& nfaEpsilonTransMap,
-            const unordered_map<state, clazz>& nfaAcceptingStates,
-            const unordered_set<state>& nfaInitialStates,
-            const unordered_set<symbol>& symbols
+            const unordered_map<t_state, unordered_map<t_symbol, unordered_set<t_state>>>& nfaTransMap,
+            const unordered_map<t_state, unordered_set<t_state>>& nfaEpsilonTransMap,
+            const unordered_map<t_state, t_clazz>& nfaAcceptingStates,
+            const unordered_set<t_state>& nfaInitialStates,
+            const unordered_set<t_symbol>& symbols
             );
 
     void computeAcceptingDfaStates(
-            const unordered_map<state, set<state>>& dfaToNfaMapper,
-            const unordered_map<state, clazz>& nfaAcceptingStates
+            const unordered_map<t_state, set<t_state>>& dfaToNfaMapper,
+            const unordered_map<t_state, t_clazz>& nfaAcceptingStates
             );
 
     void minimizeDfa();

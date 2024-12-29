@@ -49,7 +49,7 @@ int main(int argc, char* argv[]) {
 
 
     // Symbol table to be used in the next phase
-    unordered_map<lexem, string> symbolTable;
+    unordered_map<t_lexem, string> symbolTable;
 
     ofstream lexicalAnalyzerOutputFile(lexicalAnalyzerOutputFilePath);
     ofstream symbolTableOutputFile(symbolTableOutputFilePath);
@@ -58,7 +58,7 @@ int main(int argc, char* argv[]) {
         throw runtime_error("Error in opening the output files for lexical analyzer!");
     }
 
-    pair<clazz, lexem> currentPair;
+    pair<t_clazz, t_lexem> currentPair;
 
     while(lexicalAnalyzer.isNextTokenAvailable()) {
 
