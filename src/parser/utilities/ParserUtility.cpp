@@ -70,8 +70,13 @@ t_parsingTokenSet computeFirstSetsRecursive(t_grammar& grammar,
         if(firstTokenInProductionAlternative.getIsTerminal() && !firstTokenInProductionAlternative.isEpsilon()) {
             currentTokenFirstSet.insert(firstTokenInProductionAlternative);
         }
-        else if(firstTokenInProductionAlternative.isEpsilon() && productionAlternative.size() == 1) {
-            currentTokenFirstSet.insert(firstTokenInProductionAlternative);
+        else if(firstTokenInProductionAlternative.isEpsilon()) {
+            if(productionAlternative.size() == 1) {
+                currentTokenFirstSet.insert(firstTokenInProductionAlternative);
+            }
+            else {
+                cerr << "Invalid production alternative: an epsilon followed by other tokens (it will be ignored)." << endl;
+            }
         }
         else if(!firstTokenInProductionAlternative.getIsTerminal()) {
             t_parsingTokenSet tempSet = handleNonTerminalProdAlt(grammar, firstSetsMap, visited, productionAlternative);
