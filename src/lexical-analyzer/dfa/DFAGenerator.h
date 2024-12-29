@@ -7,7 +7,7 @@
 #include <map>
 #include <stack>
 #include <iostream>
-#include "../utilities/types.h"
+#include "../utilities/lexicalTypes.h"
 #include "../utilities/LexicalUtility.h"
 
 using namespace std;

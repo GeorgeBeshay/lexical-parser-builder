@@ -8,7 +8,7 @@
 #include <sstream>
 #include <vector>
 #include "../dfa/DFAGenerator.h"
-#include "types.h"
+#include "lexicalTypes.h"
 
 using namespace std;
 

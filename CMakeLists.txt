@@ -11,16 +11,23 @@ add_executable(
         src/lexical-analyzer/dfa/DFAGenerator.cpp
         src/lexical-analyzer/nfa/NFA.cpp
         src/lexical-analyzer/utilities/TransitionTableContainer.cpp
-        src/lexical-analyzer/utilities/types.h
+        src/lexical-analyzer/utilities/lexicalTypes.h
         src/lexical-analyzer/utilities/LexicalUtility.cpp
-        src/parser/ParsingAnalyzer.cpp
+        src/parser/utilities/parsingTypes.h
+        src/parser/utilities/ParsingToken.cpp
+        src/parser/utilities/ParserUtility.cpp
+        src/parser/parsing-table/ParsingTable.cpp
 )
 
 add_executable(
-        lexical-analyzer
-        src/AnalyzerMain.cpp
+        lexical-parser-runner
+        src/RunnerMain.cpp
         src/lexical-analyzer/utilities/TransitionTableContainer.cpp
         src/lexical-analyzer/LexicalAnalyzer.cpp
+        src/parser/utilities/parsingTypes.h
+        src/parser/utilities/ParsingToken.cpp
+        src/parser/utilities/ParserUtility.cpp
+        src/parser/parsing-table/ParsingTable.cpp
         src/parser/ParsingAnalyzer.cpp
 )
 
@@ -43,7 +50,7 @@ add_executable(
         src/lexical-analyzer/nfa/NFA.cpp
         src/lexical-analyzer/utilities/TransitionTableContainer.cpp
         testing/TransitionTableContainerTests.cpp
-        src/lexical-analyzer/utilities/types.h
+        src/lexical-analyzer/utilities/lexicalTypes.h
         src/lexical-analyzer/utilities/LexicalUtility.cpp
         testing/LexicalAnalyzerTests.cpp
         src/parser/utilities/ParsingToken.cpp

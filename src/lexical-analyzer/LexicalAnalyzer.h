@@ -9,7 +9,7 @@
 #include <utility>
 
 #include "dfa/DFAGenerator.h"
-#include "utilities/types.h"
+#include "utilities/lexicalTypes.h"
 
 using namespace std;
 

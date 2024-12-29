@@ -1,0 +1,29 @@
+E $
+Error: M[E, int] entry in parsing table is empty. Recovery: Will skip this input token.
+T EDash $
+F TDash EDash $
+id TDash EDash $
+Error: M[TDash, ,] entry in parsing table is empty. Recovery: Will skip this input token.
+Error: M[TDash, id] entry in parsing table is empty. Recovery: Will skip this input token.
+Error: M[TDash, ,] entry in parsing table is empty. Recovery: Will skip this input token.
+Error: M[TDash, id] entry in parsing table is empty. Recovery: Will skip this input token.
+Error: M[TDash, ,] entry in parsing table is empty. Recovery: Will skip this input token.
+Error: M[TDash, id] entry in parsing table is empty. Recovery: Will skip this input token.
+Error: M[TDash, ;] entry in parsing table is empty. Recovery: Will skip this input token.
+Error: M[TDash, while] entry in parsing table is empty. Recovery: Will skip this input token.
+Error: M[TDash, (] entry in parsing table is empty. Recovery: Will skip this input token.
+Error: M[TDash, id] entry in parsing table is empty. Recovery: Will skip this input token.
+Error: M[TDash, relop] entry in parsing table is empty. Recovery: Will skip this input token.
+Error: M[TDash, num] entry in parsing table is empty. Recovery: Will skip this input token.
+id EDash $
+id $
+Error: Input token mismatch, expected a $ instead. Recovery: inserting $.
+Error: parsing stack has no more elements.
+Error: parsing stack has no more elements.
+Error: parsing stack has no more elements.
+Error: parsing stack has no more elements.
+Error: parsing stack has no more elements.
+Error: parsing stack has no more elements.
+Error: parsing stack has no more elements.
+Error: parsing stack has no more elements.
+Error: parsing stack has no more elements.

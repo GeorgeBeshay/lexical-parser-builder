@@ -8,7 +8,7 @@
 #include <map>
 #include <stack>
 #include <fstream>
-#include "types.h"
+#include "lexicalTypes.h"
 
 using namespace std;
 

@@ -3,7 +3,7 @@
 #include <string>
 
 #include "../src/parser/utilities/ParsingToken.h"
-#include "../src/parser/utilities/types.h"
+#include "../src/parser/utilities/parsingTypes.h"
 #include "../src/parser/parsing-table/ParsingTable.h"
 
 using namespace std;

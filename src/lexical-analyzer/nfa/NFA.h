@@ -1,7 +1,7 @@
 #ifndef SINGLEREGEXNFA_H
 #define SINGLEREGEXNFA_H
 
-#include "../utilities/types.h"
+#include "../utilities/lexicalTypes.h"
 #include "../utilities/RegexScanner.h"
 #include <unordered_map>
 #include <unordered_set>

@@ -1,5 +1,5 @@
-#ifndef LEXICAL_PARSER_BUILDER_TYPES_H
-#define LEXICAL_PARSER_BUILDER_TYPES_H
+#ifndef LEXICAL_PARSER_BUILDER_LEXICALTYPES_H
+#define LEXICAL_PARSER_BUILDER_LEXICALTYPES_H
 
 #include <unordered_set>
 #include <string>
@@ -18,4 +18,4 @@ using group = unordered_set<state>;
 using statesPartition = vector<group>;
 using lexem = string;
 
-#endif //LEXICAL_PARSER_BUILDER_TYPES_H
+#endif //LEXICAL_PARSER_BUILDER_LEXICALTYPES_H
