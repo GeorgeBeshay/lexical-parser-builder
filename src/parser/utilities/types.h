@@ -11,7 +11,7 @@ using namespace std;
 
 const ParsingToken EPSILON_TOKEN ("\\L", true);
 const ParsingToken END_TOKEN ("$", true);
-const ParsingToken SYNC_TOKEN ("sync", true);
+const ParsingToken SYNC_TOKEN ("_SYNC_", true);
 
 // type aliases for better readability.
 using t_prodAlt = vector<ParsingToken>;
