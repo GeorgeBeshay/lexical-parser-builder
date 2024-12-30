@@ -26,7 +26,7 @@ public:
 struct Comparator {
     // Custom comparator for sorting or storing symbols in ordered containers.
     bool operator()(const ParsingToken &a, const ParsingToken &b) const {
-        return a.getToken() == b.getToken() && a.getIsTerminal() == b.getIsTerminal();
+        return a==b;
     }
 };
 

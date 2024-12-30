@@ -30,10 +30,10 @@ TEST(ParsingTableTests, simpleTestcase) {
 
     // Act
     ParsingTable parsingTable(nonTerminal, grammar);
-    parsingTable.writeFile(filePath);
+    parsingTable.exportParsingTableToFile(filePath);
 
     ParsingTable parsingTable1(filePath);
-    parsingTable1.writeFile(filePath);
+    parsingTable1.exportParsingTableToFile(filePath);
 
     EXPECT_EQ(true, areFilesEqual(filePath, expectedFilePath));
 }
@@ -87,10 +87,10 @@ TEST(ParsingTableTests, lectureExample) {
 
     // Act
     ParsingTable parsingTable(nonTerminalE, grammar);
-    parsingTable.writeFile(filePath);
+    parsingTable.exportParsingTableToFile(filePath);
 
     ParsingTable parsingTable1(filePath);
-    parsingTable1.writeFile(filePath);
+    parsingTable1.exportParsingTableToFile(filePath);
 
     EXPECT_EQ(true, areFilesEqual(filePath, expectedFilePath));
 }

@@ -9,15 +9,16 @@
 
 using namespace std;
 
-class Rule {
+class GrammarRule {
+
 private:
     ParsingToken lhs;
     t_prodRule productions;
 
 public:
-    Rule() = default;
+    GrammarRule() = default;
 
-    explicit Rule(ParsingToken &, t_prodRule &);
+    explicit GrammarRule(ParsingToken &, t_prodRule &);
 
     const ParsingToken &getLhs() const;
 

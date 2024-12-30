@@ -6,7 +6,7 @@
 #include <vector>
 #include <unordered_set>
 #include <unordered_map>
-
+#include "../utilities/GrammarUtility.h"
 using namespace std;
 
 #define EPS "\\L"
@@ -17,7 +17,7 @@ private:
 
     ParsingToken startSymbol;
 
-    unordered_map<ParsingToken, Rule, ParsingTokenHash, Comparator> grammar;
+    unordered_map<ParsingToken, GrammarRule, ParsingTokenHash, Comparator> grammar;
 
     void generateRule(string &ruleString, bool isStart);
 
@@ -29,9 +29,9 @@ public:
 
     void generateGrammarFromFile(string &grammarInputFilePath);
 
-    const unordered_map<ParsingToken, Rule, ParsingTokenHash, Comparator> &getGrammar();
+    const unordered_map<ParsingToken, GrammarRule, ParsingTokenHash, Comparator> &getGrammar();
 
-    void setGrammar(unordered_map<ParsingToken, Rule, ParsingTokenHash, Comparator> &newGrammar);
+    void setGrammar(unordered_map<ParsingToken, GrammarRule, ParsingTokenHash, Comparator> &newGrammar);
 
     void addRule(ParsingToken &lhs, t_prodRule &productions);
 
@@ -43,7 +43,7 @@ public:
 
     ParsingToken getStartSymbol();
 
-    vector<Rule> getRules();
+    vector<GrammarRule> getRules();
 
     t_grammar get_t_grammar() const;
 };

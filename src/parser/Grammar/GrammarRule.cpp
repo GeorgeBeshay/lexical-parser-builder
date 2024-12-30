@@ -3,33 +3,33 @@
 #define EPS "\\L"
 using namespace std;
 
-Rule::Rule(ParsingToken &lhs, t_prodRule &productions) {
+GrammarRule::GrammarRule(ParsingToken &lhs, t_prodRule &productions) {
     this->lhs = lhs;
     this->productions = productions;
 }
 
-const ParsingToken &Rule::getLhs() const {
+const ParsingToken &GrammarRule::getLhs() const {
     return lhs;
 }
 
-const t_prodRule &Rule::getProductions() const {
+const t_prodRule &GrammarRule::getProductions() const {
     return productions;
 }
 
-void Rule::clearProductions() {
+void GrammarRule::clearProductions() {
     productions.clear();
 }
 
-void Rule::setProductions(t_prodRule &newProductions) {
+void GrammarRule::setProductions(t_prodRule &newProductions) {
     productions = newProductions;
 }
 
-void Rule::addProductions(t_prodRule &newProductions) {
+void GrammarRule::addProductions(t_prodRule &newProductions) {
     for (const auto &production: newProductions)
         productions.insert(production);
 }
 
-string Rule::toString() {
+string GrammarRule::toString() {
     string ruleString;
     ruleString += lhs.getToken() + " -> ";
     string productionString;
