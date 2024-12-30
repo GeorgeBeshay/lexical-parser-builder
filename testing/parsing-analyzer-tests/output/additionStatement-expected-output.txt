@@ -1,0 +1,10 @@
+E $
+T EDash $
+F TDash EDash $
+id TDash EDash $
+id EDash $
+id + T EDash $
+id + F TDash EDash $
+id + id TDash EDash $
+id + id EDash $
+id + id $

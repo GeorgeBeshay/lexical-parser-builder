@@ -4,8 +4,8 @@
 
 TEST(TransitionTableContainerTests, ConvertingSimpleDFACorrectly) {
     // Arrange
-    unordered_set<symbol> symbols = {'a', 'b'};
-    unordered_map<state, unordered_map<symbol, state>>
+    unordered_set<t_symbol> symbols = {'a', 'b'};
+    unordered_map<t_state, unordered_map<t_symbol, t_state>>
             dfaTransMap = {
             {
                     0,
@@ -14,8 +14,8 @@ TEST(TransitionTableContainerTests, ConvertingSimpleDFACorrectly) {
                     }
             },
     };
-    unordered_map<state, clazz> acceptingStates{{0, "id"}};
-    state initialState {0};
+    unordered_map<t_state, t_clazz> acceptingStates{{0, "id"}};
+    t_state initialState {0};
     int numberOfStates {1};
     string filePath = "transitionTable.txt";
 
@@ -44,8 +44,8 @@ TEST(TransitionTableContainerTests, ConvertingSimpleDFACorrectly) {
 
 TEST(TransitionTableContainerTests, ConvertingComplexDFACorrectly) {
     // Arrange
-    unordered_set<symbol> symbols = {'a', 'b'};
-    unordered_map<state, unordered_map<symbol, state>>
+    unordered_set<t_symbol> symbols = {'a', 'b'};
+    unordered_map<t_state, unordered_map<t_symbol, t_state>>
             dfaTransMap = {
             {
                     0,
@@ -83,8 +83,8 @@ TEST(TransitionTableContainerTests, ConvertingComplexDFACorrectly) {
                     }
             }
     };
-    unordered_map<state, clazz> acceptingStates{{0, "id"}};
-    state initialState {0};
+    unordered_map<t_state, t_clazz> acceptingStates{{0, "id"}};
+    t_state initialState {0};
     int numberOfStates {5};
     string filePath = "transitionTable.txt";
 

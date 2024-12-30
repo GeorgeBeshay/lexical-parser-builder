@@ -3,9 +3,9 @@
 #define ERROR_MESSAGE "Error: No match for this token"
 
 LexicalAnalyzer::LexicalAnalyzer(vector<vector<int>>& transitionTable,
-                                 unordered_map<symbol, int>& symbolToIndexMapper,
-                                 unordered_map<state, clazz>& acceptingStates,
-                                 state initialState,
+                                 unordered_map<t_symbol, int>& symbolToIndexMapper,
+                                 unordered_map<t_state, t_clazz>& acceptingStates,
+                                 t_state initialState,
                                  const string& inputFilePath)
         : transitionTable(transitionTable),
           symbolToIndexMapper(symbolToIndexMapper),
@@ -18,16 +18,16 @@ LexicalAnalyzer::LexicalAnalyzer(vector<vector<int>>& transitionTable,
     this->remainingCharacters = "";
 }
 
-pair<clazz, lexem> LexicalAnalyzer::getNextToken() {
+pair<t_clazz, t_lexem> LexicalAnalyzer::getNextToken() {
     if(!isNextTokenAvailable() && this->remainingCharacters.empty()) {
         return {};
     }
 
-    lexem token = "";
+    t_lexem token = "";
     char currentCharacter;
-    state currentState = this->initialState;
-    state nextState;
-    vector<state> currentTokenStates;
+    t_state currentState = this->initialState;
+    t_state nextState;
+    vector<t_state> currentTokenStates;
 
     // Check if there are some remaining characters from the last time
     for(int i = 0; i < this->remainingCharacters.size(); i++) {
@@ -77,7 +77,7 @@ pair<clazz, lexem> LexicalAnalyzer::getNextToken() {
     return checkCurrentState(token, currentTokenStates);
 }
 
-void LexicalAnalyzer::printErrorMessage(lexem token) {
+void LexicalAnalyzer::printErrorMessage(t_lexem token) {
     cout << ERROR_MESSAGE << ": " << token << endl;
 }
 
@@ -85,14 +85,14 @@ bool LexicalAnalyzer::isNextTokenAvailable() {
     return this->inputFilePointer.good() || !this->remainingCharacters.empty();
 }
 
-pair<clazz, lexem> LexicalAnalyzer::checkCurrentState(lexem token, vector<int> currentTokenStates) {
+pair<t_clazz, t_lexem> LexicalAnalyzer::checkCurrentState(t_lexem token, vector<int> currentTokenStates) {
     if(currentTokenStates.empty()) {
         return {};
     }
 
     for(int i = currentTokenStates.size() - 1; i >= 0; i--) {
         if(this->acceptingStates.count(currentTokenStates[i]) != 0) {
-            lexem tmpToken = token.substr(0, i + 1);
+            t_lexem tmpToken = token.substr(0, i + 1);
             this->remainingCharacters = token.substr(i + 1) + this->remainingCharacters;
 
             return {this->acceptingStates[currentTokenStates[i]], tmpToken};

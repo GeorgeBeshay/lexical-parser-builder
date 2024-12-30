@@ -1,5 +1,5 @@
-#ifndef LEXICAL_PARSER_BUILDER_TYPES_H
-#define LEXICAL_PARSER_BUILDER_TYPES_H
+#ifndef LEXICAL_PARSER_BUILDER_PARSINGTYPES_H
+#define LEXICAL_PARSER_BUILDER_PARSINGTYPES_H
 
 #include <vector>
 #include <unordered_set>
@@ -21,4 +21,4 @@ using t_grammar = unordered_map<ParsingToken, t_prodRule, ParsingTokenHash>;
 using t_parsingTokenSet = unordered_set<ParsingToken, ParsingTokenHash>; // To be used first set and follow set for each non-terminal
 using t_parsingTokenSetMap = unordered_map<ParsingToken, t_parsingTokenSet, ParsingTokenHash>;
 
-#endif //LEXICAL_PARSER_BUILDER_TYPES_H
+#endif //LEXICAL_PARSER_BUILDER_PARSINGTYPES_H

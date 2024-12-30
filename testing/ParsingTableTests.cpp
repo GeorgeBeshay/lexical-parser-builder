@@ -3,12 +3,12 @@
 #include <string>
 
 #include "../src/parser/utilities/ParsingToken.h"
-#include "../src/parser/utilities/types.h"
+#include "../src/parser/utilities/parsingTypes.h"
 #include "../src/parser/parsing-table/ParsingTable.h"
 
 using namespace std;
 
-bool areFilesEqual(string file1, string file2);
+bool areFilesEqual(const string& file1, const string& file2);
 
 TEST(ParsingTableTests, simpleTestcase) {
     // Prepare

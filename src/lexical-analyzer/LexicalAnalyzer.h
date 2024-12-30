@@ -9,7 +9,7 @@
 #include <utility>
 
 #include "dfa/DFAGenerator.h"
-#include "utilities/types.h"
+#include "utilities/lexicalTypes.h"
 
 using namespace std;
 
@@ -17,24 +17,24 @@ class LexicalAnalyzer {
 public:
 
     LexicalAnalyzer(vector<vector<int>>& transitionTable,
-                    unordered_map<symbol, int>& symbolToIndexMapper,
-                    unordered_map<state, clazz>& acceptingStates,
-                    state initialState,
+                    unordered_map<t_symbol, int>& symbolToIndexMapper,
+                    unordered_map<t_state, t_clazz>& acceptingStates,
+                    t_state initialState,
                     const string& inputFilePath);
 
-    pair<clazz, lexem> getNextToken();
+    pair<t_clazz, t_lexem> getNextToken();
     bool isNextTokenAvailable();
 
 private:
     vector<vector<int>> transitionTable;
-    unordered_map<symbol, int> symbolToIndexMapper;
-    unordered_map<state, clazz> acceptingStates;
-    state initialState;
+    unordered_map<t_symbol, int> symbolToIndexMapper;
+    unordered_map<t_state, t_clazz> acceptingStates;
+    t_state initialState;
     ifstream inputFilePointer;
     string remainingCharacters;
 
-    void printErrorMessage(lexem token);
-    pair<clazz, lexem> checkCurrentState(lexem token, vector<int> currentTokenStates);
+    void printErrorMessage(t_lexem token);
+    pair<t_clazz, t_lexem> checkCurrentState(t_lexem token, vector<int> currentTokenStates);
 };
 
 
