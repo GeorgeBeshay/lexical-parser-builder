@@ -54,7 +54,8 @@ add_executable(
         src/parser/utilities/Grammar.cpp
         src/parser/utilities/GrammarRule.cpp
         src/parser/utilities/types.h
-
+        src/parser/utilities/ParserUtility.cpp
+        testing/ParsingFirstFollowSetTests.cpp
 )
 target_link_libraries(
         lexical-parser-builder-testing
