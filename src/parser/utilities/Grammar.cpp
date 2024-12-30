@@ -150,7 +150,7 @@ void Grammar::generateRule(string &ruleString, bool isStart) {
 }
 
 void Grammar::addRule(ParsingToken &lhs, t_prodRule &productions) {
-    Rule rule = Rule(lhs, productions);
+    GrammarRule rule = GrammarRule(lhs, productions);
     grammar[lhs] = rule;
 }
 
@@ -166,7 +166,7 @@ int findLongestCommonPrefixLength(vector<t_prodAlt> prods) {
 }
 
 void Grammar::applyLeftFactoring() {
-    unordered_map<ParsingToken, Rule, ParsingTokenHash, Comparator> leftFactoredGrammar;
+    unordered_map<ParsingToken, GrammarRule, ParsingTokenHash, Comparator> leftFactoredGrammar;
 
     for (auto grammar_entry: grammar) {
         // A map to group productions by their common prefix
@@ -226,11 +226,11 @@ void Grammar::applyLeftFactoring() {
                     newRuleProductions.insert(productionRemainingTokens);
                 }
                 // Create a new rule with the factored new Unique Token  and its new productions
-                Rule addedRule(newUniqueToken, newRuleProductions);
+                GrammarRule addedRule(newUniqueToken, newRuleProductions);
 
                 // Create a temporary CFG to handle recursive left factoring and merge with the new grammar
                 Grammar recursiveLeftFactoringGrammar;
-                unordered_map<ParsingToken, Rule, ParsingTokenHash, Comparator> tempGrammar;
+                unordered_map<ParsingToken, GrammarRule, ParsingTokenHash, Comparator> tempGrammar;
                 tempGrammar[newUniqueToken] = addedRule;
                 recursiveLeftFactoringGrammar.setGrammar(tempGrammar);
                 recursiveLeftFactoringGrammar.applyLeftFactoring();
@@ -242,7 +242,7 @@ void Grammar::applyLeftFactoring() {
         }
         // Add the rule for the original LHS symbol after factoring
         ParsingToken token(grammar_entry.first);
-        Rule newRule(token, newFactoredProductions);
+        GrammarRule newRule(token, newFactoredProductions);
         leftFactoredGrammar[token] = newRule;
     }
 
@@ -250,7 +250,7 @@ void Grammar::applyLeftFactoring() {
     grammar = leftFactoredGrammar;
 }
 
-void handleNonImmediateLeftRecursion(Rule &ruleA, Rule &ruleB) {
+void handleNonImmediateLeftRecursion(GrammarRule &ruleA, GrammarRule &ruleB) {
     ParsingToken ruleA_LHS = ruleA.getLhs();
     ParsingToken ruleB_LHS = ruleB.getLhs();
 
@@ -276,7 +276,7 @@ void handleNonImmediateLeftRecursion(Rule &ruleA, Rule &ruleB) {
     ruleA.setProductions(ruleA_newProductions);
 }
 
-void handleImmediateLeftRecursion(Rule &rule, vector<Rule> &grammarRules) {
+void handleImmediateLeftRecursion(GrammarRule &rule, vector<GrammarRule> &grammarRules) {
     ParsingToken lhs = rule.getLhs();
     // Create a new intermediate token to replace the recursive LHS (e.g., A -> A')
     ParsingToken newIntermediateToken(lhs.getToken() + "'", lhs.getIsTerminal());
@@ -335,13 +335,13 @@ void handleImmediateLeftRecursion(Rule &rule, vector<Rule> &grammarRules) {
     newRuleProductions.insert(newProd);  // Insert epsilon production
 
     // Create and add the new rule with intermediate productions to the grammar
-    Rule newRule(newIntermediateToken, newRuleProductions);
+    GrammarRule newRule(newIntermediateToken, newRuleProductions);
     grammarRules.push_back(newRule);  // Append the new rule to the grammar
 }
 
 void Grammar::removeLeftRecursion() {
-    unordered_map<ParsingToken, Rule, ParsingTokenHash, Comparator> leftRecursionFreeGrammar;
-    vector<Rule> rules = getRules();
+    unordered_map<ParsingToken, GrammarRule, ParsingTokenHash, Comparator> leftRecursionFreeGrammar;
+    vector<GrammarRule> rules = getRules();
 
     for (int i = 0; i < rules.size(); i++) {
         for (int j = 0; j < i; j++)
@@ -359,8 +359,8 @@ ParsingToken Grammar::getStartSymbol() {
     return startSymbol;
 }
 
-vector<Rule> Grammar::getRules() {
-    vector<Rule> rules;
+vector<GrammarRule> Grammar::getRules() {
+    vector<GrammarRule> rules;
     rules.reserve(grammar.size());
     for (const auto &entry: grammar)
         rules.push_back(entry.second);
@@ -368,11 +368,11 @@ vector<Rule> Grammar::getRules() {
     return rules;
 }
 
-const unordered_map<ParsingToken, Rule, ParsingTokenHash, Comparator> &Grammar::getGrammar() {
+const unordered_map<ParsingToken, GrammarRule, ParsingTokenHash, Comparator> &Grammar::getGrammar() {
     return grammar;
 }
 
-void Grammar::setGrammar(unordered_map<ParsingToken, Rule, ParsingTokenHash, Comparator> &newGrammar) {
+void Grammar::setGrammar(unordered_map<ParsingToken, GrammarRule, ParsingTokenHash, Comparator> &newGrammar) {
     Grammar::grammar = newGrammar;
 }
 
