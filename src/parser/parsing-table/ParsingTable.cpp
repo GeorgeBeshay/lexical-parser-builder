@@ -20,10 +20,10 @@ bool ParsingTable::constructParsingTable(t_grammar &grammar, t_parsingTokenSetMa
         int nonTerminalIndex = getNonTerminalIndex(nonTerminal);
 
         if(ParserUtility::setContainsEpsilon(firstSetsMap[nonTerminal])) {
-            addEpsilonToFollowSet(nonTerminal, followSetsMap[nonTerminal]);
+            addEpsilonTransInFollowSetEntries(nonTerminal, followSetsMap[nonTerminal]);
         }
         else {
-            addSyncToFollowSet(nonTerminal, followSetsMap[nonTerminal]);
+            addSyncTransInFollowSetEntries(nonTerminal, followSetsMap[nonTerminal]);
         }
 
         for(t_prodAlt prodAlt: grammarEntry.second) {
@@ -71,18 +71,14 @@ t_prodAlt ParsingTable::move(ParsingToken nonTerminal, ParsingToken terminal) {
     int nonTerminalIndex = getNonTerminalIndex(nonTerminal);
     int terminalIndex = getTerminalIndex(terminal);
 
-    if(nonTerminalIndex == NOT_FOUND) {
-        return {};
-    }
-
-    if(terminalIndex == NOT_FOUND) {
+    if(nonTerminalIndex == NOT_FOUND || terminalIndex == NOT_FOUND) {
         return {};
     }
 
     return this->parsingTable[nonTerminalIndex][terminalIndex];
 }
 
-bool ParsingTable::writeFile(string &filePath) {
+bool ParsingTable::exportParsingTableToFile(string &filePath) {
     ofstream outFile(filePath);
 
     if (!outFile) {
@@ -121,7 +117,7 @@ bool ParsingTable::writeFile(string &filePath) {
     return true;
 }
 
-bool ParsingTable::readFile(string &filePath) {
+bool ParsingTable::importParsingTableFromFile(string &filePath) {
     ifstream inFile(filePath);
 
     if (!inFile) {
@@ -235,7 +231,7 @@ int ParsingTable::getTerminalIndex(ParsingToken terminal) {
     }
 }
 
-void ParsingTable::addEpsilonToFollowSet(ParsingToken nonTerminal, t_parsingTokenSet followSet) {
+void ParsingTable::addEpsilonTransInFollowSetEntries(ParsingToken nonTerminal, t_parsingTokenSet followSet) {
     int nonTerminalIndex = getNonTerminalIndex(nonTerminal);
 
     for(ParsingToken followToken: followSet) {
@@ -245,7 +241,7 @@ void ParsingTable::addEpsilonToFollowSet(ParsingToken nonTerminal, t_parsingToke
     }
 }
 
-void ParsingTable::addSyncToFollowSet(ParsingToken nonTerminal, t_parsingTokenSet followSet) {
+void ParsingTable::addSyncTransInFollowSetEntries(ParsingToken nonTerminal, t_parsingTokenSet followSet) {
     int nonTerminalIndex = getNonTerminalIndex(nonTerminal);
 
     for(ParsingToken followToken: followSet) {

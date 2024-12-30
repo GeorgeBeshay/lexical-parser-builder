@@ -21,7 +21,7 @@ private:
     unordered_map<ParsingToken, int, ParsingTokenHash> nonTerminalToIndexMapper;
     unordered_map<ParsingToken, int, ParsingTokenHash> terminalToIndexMapper;
 
-    bool readFile(string& filePath);
+    bool importParsingTableFromFile(string& filePath);
 
     bool initializeParsingTable(ParsingToken startSymbol, t_grammar grammar);
 
@@ -33,14 +33,14 @@ private:
     int getNonTerminalIndex(ParsingToken nonTerminal);
     int getTerminalIndex(ParsingToken terminal);
 
-    void addEpsilonToFollowSet(ParsingToken nonTerminal, t_parsingTokenSet followSet);
-    void addSyncToFollowSet(ParsingToken nonTerminal, t_parsingTokenSet followSet);
+    void addEpsilonTransInFollowSetEntries(ParsingToken nonTerminal, t_parsingTokenSet followSet);
+    void addSyncTransInFollowSetEntries(ParsingToken nonTerminal, t_parsingTokenSet followSet);
 
     bool isEmptyCell(int nonTerminalIndex, int terminalIndex);
 
 public:
-    ParsingTable(string& filePath) {
-        if(!readFile(filePath)) {
+    explicit ParsingTable(string& filePath) {
+        if(!importParsingTableFromFile(filePath)) {
             throw runtime_error("There is a problem in reading the parsing table file: " + filePath);
         }
     }
@@ -51,7 +51,7 @@ public:
         }
     }
 
-    bool writeFile(string& filePath);
+    bool exportParsingTableToFile(string& filePath);
 
     ParsingToken getStartSymbol() { return startSymbol; }
 
