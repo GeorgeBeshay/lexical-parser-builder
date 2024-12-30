@@ -2,7 +2,7 @@
 #include <unordered_map>
 
 #include "../src/parser/utilities/ParsingToken.h"
-#include "../src/parser/utilities/types.h"
+#include "../src/parser/utilities/parsingTypes.h"
 
 using namespace std;
 

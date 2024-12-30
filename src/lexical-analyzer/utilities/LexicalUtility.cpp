@@ -8,7 +8,7 @@ namespace LexicalUtility {
      * @param p2
      * @return
      */
-    bool areEqualPartitions(const statesPartition& p1, const statesPartition& p2) {
+    bool areEqualPartitions(const t_statesPartition& p1, const t_statesPartition& p2) {
         if (p1.size() != p2.size()) {
             return false;
         }
@@ -23,23 +23,23 @@ namespace LexicalUtility {
     }
 
     /**
-     * Any two states s and t should be in the same group iff they have transitions on all input symbols to states within the same group.
+     * Any two states s and t should be in the same t_group iff they have transitions on all input symbols to states within the same t_group.
      * @param grp
      * @param parentPartition
      * @param transMap
      * @param languageSymbols
      * @return
      */
-    statesPartition partitionGroup(
-        const group& grp,
-        const statesPartition& parentPartition,
-        const unordered_map<state, unordered_map<symbol, state>>& transMap,
-        const unordered_set<symbol>& languageSymbols
+    t_statesPartition partitionGroup(
+        const t_group& grp,
+        const t_statesPartition& parentPartition,
+        const unordered_map<t_state, unordered_map<t_symbol, t_state>>& transMap,
+        const unordered_set<t_symbol>& languageSymbols
         ) {
-        statesPartition childPartition;
+        t_statesPartition childPartition;
 
-        map<vector<state>, unordered_set<state>> destinationStatesToGrpMapper;
-        map<state, size_t> stateToGrpIdxMapper;
+        map<vector<t_state>, unordered_set<t_state>> destinationStatesToGrpMapper;
+        map<t_state, size_t> stateToGrpIdxMapper;
 
         for (size_t idx = 0; idx < parentPartition.size() ; idx++) {
             for (auto& tempState: parentPartition[idx]) {
@@ -48,20 +48,20 @@ namespace LexicalUtility {
         }
 
         for (auto& tempState: grp) {
-            vector<state> tempDestinationStates(languageSymbols.size());
+            vector<t_state> tempDestinationStates(languageSymbols.size());
             size_t currentSymbolIdx = 0;
             for (auto& symbol: languageSymbols) {
                 if (
                     (transMap.count(tempState) == 0) ||
                     (transMap.at(tempState).count(symbol) == 0)
                     ) {
-                    // in case of having no transitions from this state or on this symbol.
+                    // in case of having no transitions from this t_state or on this t_symbol.
                     tempDestinationStates[currentSymbolIdx++] = REJECTING_STATE;
                 } else {
-                    tempDestinationStates[currentSymbolIdx++] = (state) stateToGrpIdxMapper[transMap.at(tempState).at(symbol)];
+                    tempDestinationStates[currentSymbolIdx++] = (t_state) stateToGrpIdxMapper[transMap.at(tempState).at(symbol)];
                 }
             }
-            // add the current state to its corresponding subgroup.
+            // add the current t_state to its corresponding subgroup.
             destinationStatesToGrpMapper[tempDestinationStates].insert(tempState);
         }
 
@@ -79,12 +79,12 @@ namespace LexicalUtility {
      * @param nfaEpsilonTransMap
      * @return
      */
-    unordered_set<state> computeEpsilonClosure(
-        const unordered_set<state> &originalStates,
-        const unordered_map<state, unordered_set<state>> &nfaEpsilonTransMap
+    unordered_set<t_state> computeEpsilonClosure(
+        const unordered_set<t_state> &originalStates,
+        const unordered_map<t_state, unordered_set<t_state>> &nfaEpsilonTransMap
     ) {
-        unordered_set<state> epsilonClosure;
-        stack<state> remainingStates;
+        unordered_set<t_state> epsilonClosure;
+        stack<t_state> remainingStates;
 
         // pushing all states into the stack.
         for (auto t: originalStates) {
@@ -93,7 +93,7 @@ namespace LexicalUtility {
         }
 
         while (!remainingStates.empty()) {
-            state tempState = remainingStates.top();
+            t_state tempState = remainingStates.top();
             remainingStates.pop();
 
             if (nfaEpsilonTransMap.find(tempState) == nfaEpsilonTransMap.end()) {
@@ -113,19 +113,19 @@ namespace LexicalUtility {
     }
 
     /**
-     * Given a set of source states and a trigger symbol, this method computes the corresponding
+     * Given a set of source states and a trigger t_symbol, this method computes the corresponding
      * destination states.
      * @param sourceStates
      * @param symbol_
      * @param nfaTransMap
      * @return
      */
-    unordered_set<state> makeNfaTransition(
-        const set<state> &sourceStates,
-        symbol symbol_,
-        const unordered_map<state, unordered_map<symbol, unordered_set<state>>> &nfaTransMap
+    unordered_set<t_state> makeNfaTransition(
+        const set<t_state> &sourceStates,
+        t_symbol symbol_,
+        const unordered_map<t_state, unordered_map<t_symbol, unordered_set<t_state>>> &nfaTransMap
     ) {
-        unordered_set<state> destinations;
+        unordered_set<t_state> destinations;
         for (auto t: sourceStates) {
             if (
                 nfaTransMap.find(t) == nfaTransMap.end() ||
@@ -133,7 +133,7 @@ namespace LexicalUtility {
                 ) {
                 continue;
             }
-            unordered_set<state> tempDestinations = nfaTransMap.at(t).at(symbol_);
+            unordered_set<t_state> tempDestinations = nfaTransMap.at(t).at(symbol_);
             destinations.insert(tempDestinations.begin(), tempDestinations.end());
         }
 
@@ -151,10 +151,10 @@ namespace LexicalUtility {
      * @return
      */
     bool visualizeDfa(
-        state initialState,
-        const unordered_set<symbol>& symbols,
-        const unordered_map<state, unordered_map<symbol, state>>& transMap,
-        const unordered_map<state, clazz>& acceptingStates,
+        t_state initialState,
+        const unordered_set<t_symbol>& symbols,
+        const unordered_map<t_state, unordered_map<t_symbol, t_state>>& transMap,
+        const unordered_map<t_state, t_clazz>& acceptingStates,
         const int& numberOfStates,
         const string& imgFileNameWithExtension
         ) {
@@ -192,14 +192,14 @@ namespace LexicalUtility {
             }
 
             // Non-accepting states
-            for (state s=0; s < numberOfStates; s++) {
+            for (t_state s=0; s < numberOfStates; s++) {
                 if (acceptingStates.count(s) != 0) {
                     continue;
                 }
                 dotFile << " " << s << " [shape=circle, color=purple, style=filled];\n";
             }
 
-            // Initial state
+            // Initial t_state
             dotFile << "    " << initialState << " [color=red, style=filled];\n";
             dotFile << "    start [shape=none, label=\"\"];\n";
             dotFile << "    start -> " << initialState << ";\n";
@@ -239,11 +239,11 @@ namespace LexicalUtility {
      * @return
      */
     bool visualizeNfa(
-        const unordered_set<state>& initialStates,
-        const unordered_set<symbol>& symbols,
-        const unordered_map<state, unordered_map<symbol, unordered_set<state>>>& transMap,
-        const unordered_map<state, unordered_set<state>>& epsilonTransitions,
-        const unordered_map<state, clazz>& acceptingStates,
+        const unordered_set<t_state>& initialStates,
+        const unordered_set<t_symbol>& symbols,
+        const unordered_map<t_state, unordered_map<t_symbol, unordered_set<t_state>>>& transMap,
+        const unordered_map<t_state, unordered_set<t_state>>& epsilonTransitions,
+        const unordered_map<t_state, t_clazz>& acceptingStates,
         const int& numberOfStates,
         const string& imgFileNameWithExtension
     ) {
@@ -292,14 +292,14 @@ namespace LexicalUtility {
             }
 
             // Non-accepting states
-            for (state s=0; s < numberOfStates; s++) {
+            for (t_state s=0; s < numberOfStates; s++) {
                 if (acceptingStates.count(s) != 0) {
                     continue;
                 }
                 dotFile << " " << s << " [shape=circle, color=purple, style=filled];\n";
             }
 
-            // Initial state
+            // Initial t_state
             for (auto& tempInitState: initialStates) {
                 dotFile << "    " << tempInitState << " [color=red, style=filled];\n";
                 dotFile << "    start [shape=none, label=\"\"];\n";

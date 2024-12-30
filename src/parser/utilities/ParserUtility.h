@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include <iostream>
 
-#include "types.h"
+#include "parsingTypes.h"
 #include "ParsingToken.h"
 
 using namespace std;
@@ -17,6 +17,8 @@ namespace ParserUtility {
     t_parsingTokenSetMap computeFollowSets(t_grammar grammar,
                                            ParsingToken startSymbol,
                                            t_parsingTokenSetMap firstSetsMap);
+
+    bool setContainsEpsilon(t_parsingTokenSet tokenSet);
 };
 
 

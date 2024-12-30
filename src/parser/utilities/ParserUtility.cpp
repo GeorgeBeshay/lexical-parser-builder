@@ -43,6 +43,16 @@ t_parsingTokenSetMap ParserUtility::computeFollowSets(t_grammar grammar, Parsing
     return followSetsMap;
 }
 
+bool ParserUtility::setContainsEpsilon(t_parsingTokenSet tokenSet) {
+    for(ParsingToken parsingToken: tokenSet) {
+        if(parsingToken.isEpsilon()) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 // Implementation of prototype functions
 t_parsingTokenSet computeFirstSetsRecursive(t_grammar& grammar,
                                            t_parsingTokenSetMap& firstSetsMap,
@@ -88,16 +98,6 @@ t_parsingTokenSet computeFirstSetsRecursive(t_grammar& grammar,
     return currentTokenFirstSet;
 }
 
-bool setContainsEpsilon(t_parsingTokenSet tokenSet) {
-    for(ParsingToken parsingToken: tokenSet) {
-        if(parsingToken.isEpsilon()) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 t_parsingTokenSet filterSetFromEpsilon(t_parsingTokenSet tokenSet) {
     t_parsingTokenSet currentSet;
     for(ParsingToken parsingToken: tokenSet) {
@@ -122,7 +122,7 @@ t_parsingTokenSet handleNonTerminalProdAlt(t_grammar& grammar,
             filteredSet = filterSetFromEpsilon(tempSet);
             currentSet.insert(filteredSet.begin(), filteredSet.end());
 
-            if(!setContainsEpsilon(tempSet)) {
+            if(!ParserUtility::setContainsEpsilon(tempSet)) {
                 return currentSet;
             }
         }
@@ -186,7 +186,7 @@ void handleFollowSetExtraction(t_grammar& grammar,
                             t_parsingTokenSet tempFilteredFirstSet = filterSetFromEpsilon(tempFirstSet);
                             currentTokenFollowSet.insert(tempFilteredFirstSet.begin(), tempFilteredFirstSet.end());
 
-                            if(!setContainsEpsilon(tempFirstSet)) {
+                            if(!ParserUtility::setContainsEpsilon(tempFirstSet)) {
                                 takeFollowSetOfThisEntry = false;
                                 break;
                             }

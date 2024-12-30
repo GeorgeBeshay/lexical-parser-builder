@@ -1,11 +1,11 @@
 #include "TransitionTableContainer.h"
 
 TransitionTableContainer::TransitionTableContainer(
-        unordered_map<state, unordered_map<symbol, state>> transMap,
-        unordered_map<state, clazz> acceptingStates,
-        state initialState,
-        int numberOfStates,
-        unordered_set<symbol> symbols
+    unordered_map<t_state, unordered_map<t_symbol, t_state>> transMap,
+    unordered_map<t_state, t_clazz> acceptingStates,
+    t_state initialState,
+    int numberOfStates,
+    unordered_set<t_symbol> symbols
         ) {
     this->transitionTable.resize(numberOfStates, vector<int>(symbols.size(), REJECTING_STATE));
     this->acceptingStates = acceptingStates;
@@ -17,7 +17,7 @@ TransitionTableContainer::TransitionTableContainer(
     }
 
     for(auto& outerPair: transMap) {
-        state currentState = outerPair.first;
+        t_state currentState = outerPair.first;
 
         for(auto& transition: outerPair.second) {
             int currentSymbolIndex = this->symbolToIndexMapper[transition.first];
@@ -91,7 +91,7 @@ bool TransitionTableContainer::readFile(string &filePath) {
     while (getline(inFile, line)) {
         if (line.empty()) break;
         stringstream symbolStream(line);
-        symbol currentSymbol;
+        t_symbol currentSymbol;
         int index;
         symbolStream >> currentSymbol >> index;
         symbolToIndexMapper[currentSymbol] = index;

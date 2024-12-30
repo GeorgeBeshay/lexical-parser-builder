@@ -127,7 +127,7 @@ NFA SingleNFA::handleConcatenation(const NFA &nfa1, const NFA &nfa2) {
     result.transitions.insert(nfa2.transitions.begin(), nfa2.transitions.end());
     result.epsilonTransitions.insert(nfa2.epsilonTransitions.begin(), nfa2.epsilonTransitions.end());
 
-    // Link nfa1's accept state to nfa2's start state
+    // Link nfa1's accept t_state to nfa2's start t_state
     result.addEpsilonTransition(nfa1.acceptState, nfa2.startState);
 
     return result;
@@ -212,7 +212,7 @@ string applyImplicitConcatenation(const string &regex) {
     return processedRegex;
 }
 
-NFA SingleNFA::regexToNFA(const string &regex, const clazz &className,
+NFA SingleNFA::regexToNFA(const string &regex, const t_clazz &className,
                           const vector<pair<string, string>> &regularDefinitions) {
     string modifiedRegex = regex;
 
@@ -353,13 +353,13 @@ NFA SingleNFA::regexToNFA(const string &regex, const clazz &className,
     }
 
     NFA resultNFA = nfaStack.top();
-    resultNFA.acceptStateClasses[resultNFA.acceptState] = className;  // Set accept state class
+    resultNFA.acceptStateClasses[resultNFA.acceptState] = className;  // Set accept t_state class
     return resultNFA;
 }
 
 
 // Generate NFA for a single regex with class name
-NFA SingleNFA::generateSingleRegexNFA(const string &regex, const clazz &className,
+NFA SingleNFA::generateSingleRegexNFA(const string &regex, const t_clazz &className,
                                       const vector<pair<string, string>> &regularDefinitions) {
     return regexToNFA(regex, className, regularDefinitions); // Pass class to regexToNFA
 }
@@ -408,11 +408,11 @@ void NFA::printGraphviz() {
     cout << "    rankdir=LR;" << endl; // Left-to-right direction
     cout << "    size=\"8,5\";" << endl;
 
-    // Highlight start state with an incoming invisible arrow
+    // Highlight start t_state with an incoming invisible arrow
     cout << "    node [shape = point]; START;" << endl;
     cout << "    START -> " << startState << " [ label = \"start\" ];" << endl;
 
-    // Mark accept state with a double circle
+    // Mark accept t_state with a double circle
     cout << "    node [shape = doublecircle]; " << acceptState << ";" << endl;
 
     // Mark all other states with a single circle
@@ -445,7 +445,7 @@ void CombinedNFA::printGraphvizSummarized() {
     cout << "    rankdir=LR;" << endl; // Left-to-right direction
     cout << "    size=\"8,5\";" << endl;
 
-    // Highlight start state with an incoming invisible arrow
+    // Highlight start t_state with an incoming invisible arrow
     cout << "    node [shape = point]; START;" << endl;
     cout << "    START -> " << startState << " [ label = \"start\" ];" << endl;
 
@@ -479,26 +479,26 @@ void CombinedNFA::printGraphvizSummarized() {
 
                 // If there's only one transition for this pair of states and it's "E" or any single letter or digit, don't summarize
                 if (stateSymbols.size() == 1) {
-                    char symbol = *stateSymbols.begin();  // Get the single symbol
+                    char symbol = *stateSymbols.begin();  // Get the single t_symbol
                     cout << "    " << from << " -> " << to
                          << " [ label = \"" << symbol << "\" ];" << endl;
                 } else {
                     // Summarize the range for digits or alphabetic symbols
-                    if (isdigit(symbol)) { // If the symbol is a digit (0-9)
+                    if (isdigit(symbol)) { // If the t_symbol is a digit (0-9)
                         string summarizedLabel = "0-9";
                         if (summarizedTransitions.find({from, to}) == summarizedTransitions.end()) {
                             cout << "    " << from << " -> " << to
                                  << " [ label = \"" << summarizedLabel << "\" ];" << endl;
                             summarizedTransitions.insert({from, to});
                         }
-                    } else if (islower(symbol)) { // If the symbol is a lowercase letter (a-z)
+                    } else if (islower(symbol)) { // If the t_symbol is a lowercase letter (a-z)
                         string summarizedLabel = "a-z";
                         if (summarizedTransitions.find({from, to}) == summarizedTransitions.end()) {
                             cout << "    " << from << " -> " << to
                                  << " [ label = \"" << summarizedLabel << "\" ];" << endl;
                             summarizedTransitions.insert({from, to});
                         }
-                    } else if (isupper(symbol)) { // If the symbol is an uppercase letter (A-Z)
+                    } else if (isupper(symbol)) { // If the t_symbol is an uppercase letter (A-Z)
                         string summarizedLabel = "A-Z";
                         if (summarizedTransitions.find({from, to}) == summarizedTransitions.end()) {
                             cout << "    " << from << " -> " << to
@@ -531,7 +531,7 @@ void CombinedNFA::printGraphviz() {
     cout << "    rankdir=LR;" << endl; // Left-to-right direction
     cout << "    size=\"8,5\";" << endl;
 
-    // Highlight start state with an incoming invisible arrow
+    // Highlight start t_state with an incoming invisible arrow
     cout << "    node [shape = point]; START;" << endl;
     cout << "    START -> " << startState << " [ label = \"start\" ];" << endl;
 
