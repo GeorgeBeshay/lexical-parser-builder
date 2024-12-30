@@ -13,9 +13,9 @@ add_executable(
         src/lexical-analyzer/utilities/TransitionTableContainer.cpp
         src/lexical-analyzer/utilities/lexicalTypes.h
         src/lexical-analyzer/utilities/LexicalUtility.cpp
-        src/parser/utilities/Grammar.cpp
-        src/parser/utilities/GrammarRule.cpp
-        src/parser/utilities/types.h
+        src/parser/Grammar/Grammar.cpp
+        src/parser/Grammar/GrammarRule.cpp
+        src/parser/utilities/GrammarUtility.cpp
         src/parser/utilities/parsingTypes.h
         src/parser/utilities/ParsingToken.cpp
         src/parser/utilities/ParserUtility.cpp
@@ -30,6 +30,7 @@ add_executable(
         src/parser/utilities/parsingTypes.h
         src/parser/utilities/ParsingToken.cpp
         src/parser/utilities/ParserUtility.cpp
+        src/parser/utilities/GrammarUtility.cpp
         src/parser/parsing-table/ParsingTable.cpp
         src/parser/ParsingAnalyzer.cpp
 )
@@ -58,9 +59,10 @@ add_executable(
         testing/LexicalAnalyzerTests.cpp
         src/parser/utilities/ParsingToken.cpp
         testing/ParsingTokenTests.cpp
-        src/parser/utilities/Grammar.cpp
-        src/parser/utilities/GrammarRule.cpp
+        src/parser/Grammar/Grammar.cpp
+        src/parser/Grammar/GrammarRule.cpp
         src/parser/utilities/ParserUtility.cpp
+        src/parser/utilities/GrammarUtility.cpp
         testing/ParsingFirstFollowSetTests.cpp
         src/parser/parsing-table/ParsingTable.cpp
         testing/ParsingTableTests.cpp

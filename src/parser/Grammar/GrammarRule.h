@@ -1,8 +1,8 @@
 #ifndef LEXICAL_PARSER_BUILDER_GRAMMARRULE_H
 #define LEXICAL_PARSER_BUILDER_GRAMMARRULE_H
 
-#include "types.h"
-#include "ParsingToken.h"
+#include "../utilities/parsingTypes.h"
+#include "../utilities/ParsingToken.h"
 #include <string>
 #include <vector>
 #include <unordered_set>

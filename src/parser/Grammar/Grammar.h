@@ -6,7 +6,7 @@
 #include <vector>
 #include <unordered_set>
 #include <unordered_map>
-
+#include "../utilities/GrammarUtility.h"
 using namespace std;
 
 #define EPS "\\L"

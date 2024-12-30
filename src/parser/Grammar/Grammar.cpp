@@ -2,7 +2,6 @@
 #include <fstream>
 #include <utility>
 #include <iostream>
-#include <sstream>
 #include <string>
 #include <map>
 
@@ -43,48 +42,6 @@ void Grammar::generateGrammarFromFile(string &grammarInputFilePath) {
     grammarText.close();
 }
 
-// Splits a string `str` into a vector `vec` by using `delimiter` as the separator
-void stringToVec(vector<string> &vec, string &str, char delimiter) {
-    string modifiedStr;
-    bool insideTerminal = false;  // Flag to track if we are inside a terminal
-
-    for (char i: str) {
-        if (i == '\'') {
-            // Whenever we encounter a single quote, toggle insideTerminal flag
-            modifiedStr += insideTerminal ? "' " : " '";
-            insideTerminal = !insideTerminal;  // Flip the state
-        } else
-            // Add other characters as they are
-            modifiedStr += i;
-    }
-
-    stringstream ssStr(modifiedStr);
-    string token;
-    while (getline(ssStr, token, delimiter))  // While there are tokens separated by delimiter
-        vec.push_back(token);
-}
-
-// Removes single quotes from a string if they surround it
-bool trimTerminalQuotes(string &str) {
-    if (str[0] == '\'' && str[str.length() - 1] == '\'') {  // Check if the first and last characters are single quotes
-        str.erase(remove(str.begin(), str.end(), '\''), str.end());  // Remove the single quotes from the string
-        return true;  // Return true, indicating that the quotes were removed
-    }
-    return false;  // Return false if there are no surrounding single quotes
-}
-
-// Trims leading and trailing spaces from the given string
-void trimSpaces(string &str) {
-    // Trim leading spaces.
-    str.erase(str.begin(), find_if(str.begin(), str.end(), [](int character) {
-        return !isspace(character);  // Find the first non-whitespace character
-    }));
-    // Trim trailing spaces.
-    str.erase(find_if(str.rbegin(), str.rend(), [](int character) {
-        return !isspace(character);  // Find the first non-whitespace character from the end
-    }).base(), str.end());
-}
-
 // This function tokenizes a rule string into a 'RuleAsStringStruct' structure
 RuleAsStringStruct extractRuleComponents(string &ruleAsString) {
     RuleAsStringStruct ruleAsStringStruct;
@@ -101,18 +58,18 @@ RuleAsStringStruct extractRuleComponents(string &ruleAsString) {
     }
     // Extract the LHS symbol (part before '=')
     string lhs = ruleAsString.substr(0, positionOfEqualSign - 1);
-    trimSpaces(lhs);
+    GrammarUtility::trimSpaces(lhs);
     // Store the LHS symbol token
     ruleAsStringStruct.LHS = lhs;
     // Extract the RHS production rules (part after '=')
     string rhs = ruleAsString.substr(positionOfEqualSign + 1, ruleAsString.length());
-    trimSpaces(rhs);
+    GrammarUtility::trimSpaces(rhs);
     // Split the RHS into individual production rules separated by '|'
-    stringToVec(productionsString, rhs, '|');
+    GrammarUtility::stringToVec(productionsString, rhs, '|');
     for (auto &productionString: productionsString) {
         vector<string> prod;
-        trimSpaces(productionString);
-        stringToVec(prod, productionString, ' ');  // Split production into symbols separated by spaces
+        GrammarUtility::trimSpaces(productionString);
+        GrammarUtility::stringToVec(prod, productionString, ' ');  // Split production into symbols separated by spaces
         ruleAsStringStruct.productions.push_back(prod);  // Add production to the rule struct
         prod.clear();
     }
@@ -129,9 +86,9 @@ void Grammar::generateRule(string &ruleString, bool isStart) {
         t_prodAlt prod;  // Creates a new production for the rule
         for (auto &token: production) {  // Iterate through the  tokens of each production
             ParsingToken symbol;
-            trimSpaces(token);
+            GrammarUtility::trimSpaces(token);
             if (token.empty()) continue;
-            if (token == "\\L" || trimTerminalQuotes(token))
+            if (token == "\\L" || GrammarUtility::trimTerminalQuotes(token))
                 symbol = ParsingToken(token, true);  // Create a terminal symbol
             else
                 symbol = ParsingToken(token, false);  // Create non-terminal symbols
