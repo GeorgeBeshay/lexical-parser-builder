@@ -63,7 +63,10 @@ int main(int argc, char* argv[]) {
     while(lexicalAnalyzer.isNextTokenAvailable()) {
 
         currentPair = lexicalAnalyzer.getNextToken();
-        while(!parsingAnalyzer.doParseStep(ParsingToken(currentPair.first, true)));
+        ParsingToken currentToken(currentPair.first == "assign"? currentPair.second : currentPair.first,
+                                  true);
+
+        while(!parsingAnalyzer.doParseStep(currentToken));
 
         if(currentPair.first == IDENTIFIER_CLASS) {
             symbolTable[currentPair.second] = "";
