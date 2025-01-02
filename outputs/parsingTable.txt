@@ -26,13 +26,13 @@ addop 1 15
 ) 1 2
 if 1 5
 { 1 3
+- 1 14
+assign 1 11
 while 1 0
 } 1 4
 else 1 6
 int 1 10
 float 1 7
-- 1 14
-= 1 11
 id 1 8
 ; 1 9
 relop 1 12
@@ -46,7 +46,7 @@ relop 1 12
 0 5 if 1 ( 1 EXPRESSION 0 ) 1 { 1 STATEMENT 0 } 1 else 1 { 1 STATEMENT 0 } 1
 0 6
 0 7 float 1 id 1 ; 1
-0 8 id 1 = 1 EXPRESSION 0 ; 1
+0 8 id 1 assign 1 EXPRESSION 0 ; 1
 0 9
 0 10 int 1 id 1 ; 1
 0 11
@@ -179,7 +179,7 @@ relop 1 12
 7 5 if 1 ( 1 EXPRESSION 0 ) 1 { 1 STATEMENT 0 } 1 else 1 { 1 STATEMENT 0 } 1 STATEMENT_LIST' 0
 7 6
 7 7 float 1 id 1 ; 1 STATEMENT_LIST' 0
-7 8 id 1 = 1 EXPRESSION 0 ; 1 STATEMENT_LIST' 0
+7 8 id 1 assign 1 EXPRESSION 0 ; 1 STATEMENT_LIST' 0
 7 9
 7 10 int 1 id 1 ; 1 STATEMENT_LIST' 0
 7 11
@@ -198,7 +198,7 @@ relop 1 12
 8 5 if 1 ( 1 EXPRESSION 0 ) 1 { 1 STATEMENT 0 } 1 else 1 { 1 STATEMENT 0 } 1 STATEMENT_LIST' 0
 8 6
 8 7 float 1 id 1 ; 1 STATEMENT_LIST' 0
-8 8 id 1 = 1 EXPRESSION 0 ; 1 STATEMENT_LIST' 0
+8 8 id 1 assign 1 EXPRESSION 0 ; 1 STATEMENT_LIST' 0
 8 9
 8 10 int 1 id 1 ; 1 STATEMENT_LIST' 0
 8 11
@@ -312,7 +312,7 @@ relop 1 12
 14 5
 14 6
 14 7
-14 8 id 1 = 1 EXPRESSION 0 ; 1
+14 8 id 1 assign 1 EXPRESSION 0 ; 1
 14 9
 14 10
 14 11

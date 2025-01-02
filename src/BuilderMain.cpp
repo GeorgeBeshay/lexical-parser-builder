@@ -3,7 +3,7 @@
 #include "lexical-analyzer/dfa/DFAGenerator.h"
 #include "lexical-analyzer/utilities/TransitionTableContainer.h"
 #include "lexical-analyzer/utilities/LexicalUtility.h"
-#include "parser/Grammar/Grammar.h"
+#include "parser/grammar/Grammar.h"
 #include "parser/parsing-table/ParsingTable.h"
 
 #define LXCL_RLS_FP_PLC_HLD ("<lexical_rules_file_path>")
@@ -83,6 +83,7 @@ int main(int argc, char* argv[]) {
     Grammar grammar(grammarRulesFp);
     grammar.applyLeftFactoring();
     grammar.removeLeftRecursion();
+    grammar.printGrammar();
     ParsingTable parsingTable(grammar.getStartSymbol(), grammar.get_t_grammar());
     parsingTable.exportParsingTableToFile(parsingTableOutputFp);
 

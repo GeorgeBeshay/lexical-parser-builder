@@ -13,8 +13,8 @@ add_executable(
         src/lexical-analyzer/utilities/TransitionTableContainer.cpp
         src/lexical-analyzer/utilities/lexicalTypes.h
         src/lexical-analyzer/utilities/LexicalUtility.cpp
-        src/parser/Grammar/Grammar.cpp
-        src/parser/Grammar/GrammarRule.cpp
+        src/parser/grammar/Grammar.cpp
+        src/parser/grammar/GrammarRule.cpp
         src/parser/utilities/GrammarUtility.cpp
         src/parser/utilities/parsingTypes.h
         src/parser/utilities/ParsingToken.cpp
@@ -59,8 +59,8 @@ add_executable(
         testing/LexicalAnalyzerTests.cpp
         src/parser/utilities/ParsingToken.cpp
         testing/ParsingTokenTests.cpp
-        src/parser/Grammar/Grammar.cpp
-        src/parser/Grammar/GrammarRule.cpp
+        src/parser/grammar/Grammar.cpp
+        src/parser/grammar/GrammarRule.cpp
         src/parser/utilities/ParserUtility.cpp
         src/parser/utilities/GrammarUtility.cpp
         testing/ParsingFirstFollowSetTests.cpp

@@ -63,6 +63,12 @@ int main(int argc, char* argv[]) {
     while(lexicalAnalyzer.isNextTokenAvailable()) {
 
         currentPair = lexicalAnalyzer.getNextToken();
+
+        // To break if we reached end of the file and there is new line at the end
+        if(currentPair.first.empty() || currentPair.second.empty()) {
+            break;
+        }
+
         while(!parsingAnalyzer.doParseStep(ParsingToken(currentPair.first, true)));
 
         if(currentPair.first == IDENTIFIER_CLASS) {

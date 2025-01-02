@@ -1,30 +1,24 @@
-E $
-Error: M[E, int] entry in parsing table is empty. Recovery: Will skip this input token.
-T EDash $
-F TDash EDash $
-id TDash EDash $
-Error: M[TDash, ,] entry in parsing table is empty. Recovery: Will skip this input token.
-Error: M[TDash, id] entry in parsing table is empty. Recovery: Will skip this input token.
-Error: M[TDash, ,] entry in parsing table is empty. Recovery: Will skip this input token.
-Error: M[TDash, id] entry in parsing table is empty. Recovery: Will skip this input token.
-Error: M[TDash, ,] entry in parsing table is empty. Recovery: Will skip this input token.
-Error: M[TDash, id] entry in parsing table is empty. Recovery: Will skip this input token.
-Error: M[TDash, ;] entry in parsing table is empty. Recovery: Will skip this input token.
-Error: M[TDash, while] entry in parsing table is empty. Recovery: Will skip this input token.
-Error: M[TDash, (] entry in parsing table is empty. Recovery: Will skip this input token.
-Error: M[TDash, id] entry in parsing table is empty. Recovery: Will skip this input token.
-Error: M[TDash, relop] entry in parsing table is empty. Recovery: Will skip this input token.
-Error: M[TDash, num] entry in parsing table is empty. Recovery: Will skip this input token.
-id EDash $
-id $
-Error: Input token mismatch, expected a $ instead. Recovery: inserting $.
-Error: parsing stack has no more elements.
-Error: parsing stack has no more elements.
-Error: parsing stack has no more elements.
-Error: parsing stack has no more elements.
-Error: parsing stack has no more elements.
-Error: parsing stack has no more elements.
-Error: parsing stack has no more elements.
-Error: parsing stack has no more elements.
-Error: parsing stack has no more elements.
-Error: parsing stack has no more elements.
+METHOD_BODY $
+STATEMENT_LIST $
+int id ; STATEMENT_LIST' $
+int id ; id assign EXPRESSION ; STATEMENT_LIST' $
+int id ; id assign num TERM' SIMPLE_EXPRESSION' EXPRESSION' ; STATEMENT_LIST' $
+int id ; id assign num SIMPLE_EXPRESSION' EXPRESSION' ; STATEMENT_LIST' $
+int id ; id assign num EXPRESSION' ; STATEMENT_LIST' $
+int id ; id assign num ; STATEMENT_LIST' $
+int id ; id assign num ; if ( EXPRESSION ) { STATEMENT } else { STATEMENT } STATEMENT_LIST' $
+int id ; id assign num ; if ( id TERM' SIMPLE_EXPRESSION' EXPRESSION' ) { STATEMENT } else { STATEMENT } STATEMENT_LIST' $
+int id ; id assign num ; if ( id SIMPLE_EXPRESSION' EXPRESSION' ) { STATEMENT } else { STATEMENT } STATEMENT_LIST' $
+int id ; id assign num ; if ( id EXPRESSION' ) { STATEMENT } else { STATEMENT } STATEMENT_LIST' $
+int id ; id assign num ; if ( id relop SIMPLE_EXPRESSION ) { STATEMENT } else { STATEMENT } STATEMENT_LIST' $
+int id ; id assign num ; if ( id relop num TERM' SIMPLE_EXPRESSION' ) { STATEMENT } else { STATEMENT } STATEMENT_LIST' $
+int id ; id assign num ; if ( id relop num SIMPLE_EXPRESSION' ) { STATEMENT } else { STATEMENT } STATEMENT_LIST' $
+int id ; id assign num ; if ( id relop num ) { STATEMENT } else { STATEMENT } STATEMENT_LIST' $
+int id ; id assign num ; if ( id relop num ) { id assign EXPRESSION ; } else { STATEMENT } STATEMENT_LIST' $
+int id ; id assign num ; if ( id relop num ) { id assign num TERM' SIMPLE_EXPRESSION' EXPRESSION' ; } else { STATEMENT } STATEMENT_LIST' $
+int id ; id assign num ; if ( id relop num ) { id assign num SIMPLE_EXPRESSION' EXPRESSION' ; } else { STATEMENT } STATEMENT_LIST' $
+int id ; id assign num ; if ( id relop num ) { id assign num EXPRESSION' ; } else { STATEMENT } STATEMENT_LIST' $
+int id ; id assign num ; if ( id relop num ) { id assign num ; } else { STATEMENT } STATEMENT_LIST' $
+Error: Input token mismatch, expected a else instead. Recovery: inserting else.
+Error: Input token mismatch, expected a { instead. Recovery: inserting {.
+Error: M[STATEMENT, $] entry in parsing table is empty. Recovery: Will skip this input token.
