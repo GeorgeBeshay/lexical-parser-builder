@@ -83,6 +83,7 @@ int main(int argc, char* argv[]) {
     Grammar grammar(grammarRulesFp);
     grammar.applyLeftFactoring();
     grammar.removeLeftRecursion();
+    grammar.printGrammar();
     ParsingTable parsingTable(grammar.getStartSymbol(), grammar.get_t_grammar());
     parsingTable.exportParsingTableToFile(parsingTableOutputFp);
 
