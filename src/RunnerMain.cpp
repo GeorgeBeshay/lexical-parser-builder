@@ -69,10 +69,7 @@ int main(int argc, char* argv[]) {
             break;
         }
 
-        ParsingToken currentToken(currentPair.first == "assign"? currentPair.second : currentPair.first,
-                                  true);
-
-        while(!parsingAnalyzer.doParseStep(currentToken));
+        while(!parsingAnalyzer.doParseStep(ParsingToken(currentPair.first, true)));
 
         if(currentPair.first == IDENTIFIER_CLASS) {
             symbolTable[currentPair.second] = "";
